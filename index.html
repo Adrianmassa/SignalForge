@@ -407,6 +407,20 @@ body {
 .p4-pnl-display { font-size: 12px; font-weight: 700; padding: 3px 0 6px; }
 .p4-save-btn { width: 100%; padding: 8px; background-color: #001a33; color: #4da6ff; border: 1px solid #4da6ff; border-radius: 6px; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; -webkit-appearance: none; }
 .p4-save-btn:active { opacity: .8; }
+.p4-del-btn {
+  padding: 5px 10px; background-color: #1a0000; color: #ff5252;
+  border: 1px solid #8b0000; border-radius: 5px; font-family: inherit;
+  font-size: 12px; font-weight: 700; cursor: pointer; -webkit-appearance: none;
+  margin-top: 6px; width: 100%;
+}
+.p4-del-btn:active { opacity: .8; }
+.p4-del-all-btn {
+  padding: 4px 10px; background-color: #1a0000; color: #ff5252;
+  border: 1px solid #8b0000; border-radius: 4px; font-family: inherit;
+  font-size: 11px; font-weight: 700; cursor: pointer; -webkit-appearance: none;
+  white-space: nowrap;
+}
+.p4-del-all-btn:active { opacity: .8; }
 .p4-save-confirm { font-size: 11px; color: #00e676; font-weight: 600; text-align: center; margin-top: 4px; min-height: 16px; }
 .p4-empty { padding: 32px 16px; text-align: center; color: #3a4150; font-size: 13px; font-style: italic; }
 @media (max-width: 480px) {
@@ -753,6 +767,7 @@ body {
       <div class="p4-sum-chip">總紀錄 <span id="p4-total">0</span> 筆</div>
       <div class="p4-sum-chip">最近股票 <span id="p4-last-symbol">-</span></div>
       <div class="p4-sum-chip">最近決策 <span id="p4-last-action">-</span></div>
+      <button class="p4-del-all-btn" onclick="p4DeleteAll()" style="margin-left:auto">清除全部</button>
     </div>
     <div class="p4-list" id="p4-list">
       <div class="p4-empty">尚無記錄。執行 P3 決策後自動記錄。</div>
@@ -2091,6 +2106,7 @@ function p4EntryCardHtml(entry) {
       +'<div class="p4-fill-field p4-fill-note"><label>review note</label><textarea id="p4-note-'+eid+'" placeholder="notes...">'+noteVal+'</textarea></div>'
       +'</div>'
       +'<button class="p4-save-btn" onclick="p4SaveFillback(\''+eid+'\')">save</button>'
+      +'<button class="p4-del-btn" onclick="p4DeleteEntry(\''+eid+'\')" style="margin-top:6px">&#x1F5D1; 刪除此筆記錄</button>'
       +'<div class="p4-save-confirm" id="p4-conf-'+eid+'"></div>'
       +'</div>'
       +'</div>'
@@ -2098,6 +2114,25 @@ function p4EntryCardHtml(entry) {
   } catch(e) {
     return '<div class="p4-entry-card" style="padding:8px;color:#ff5252">render error: '+p4esc(String(e.message))+'</div>';
   }
+}
+
+function p4DeleteEntry(entryId) {
+  try {
+    if (!confirm('確定刪除這筆記錄？')) return;
+    p4Entries = p4Entries.filter(function(e) { return e.id !== entryId; });
+    p4Save();
+    p4Render();
+  } catch(e) { console.warn('p4DeleteEntry error:', e.message); }
+}
+
+function p4DeleteAll() {
+  try {
+    if (p4Entries.length === 0) return;
+    if (!confirm('確定清除全部 ' + p4Entries.length + ' 筆記錄？此操作無法復原。')) return;
+    p4Entries = [];
+    p4Save();
+    p4Render();
+  } catch(e) { console.warn('p4DeleteAll error:', e.message); }
 }
 
 (function p4Init() {
