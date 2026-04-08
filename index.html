@@ -1292,7 +1292,7 @@ font-style: italic;
 
   <!-- Collapsible body -->
 
-  <div id="p1-body">
+  <div id="p1-body" style="display:none">
     <div class="p1-grid">
 
 ```
@@ -1790,7 +1790,7 @@ font-style: italic;
 
   <!-- Collapsible body -->
 
-  <div id="p4-body">
+  <div id="p4-body" style="display:none">
 
 ```
 <!-- Summary bar -->
@@ -3107,9 +3107,9 @@ function p1Init() {
 function p1ToggleBody() {
   try {
     p1BodyOpen = !p1BodyOpen;
-    const body = $('p1-body');
-    const icon = $('p1-toggle-icon');
-    if (body) body.className = p1BodyOpen ? 'open' : '';
+    const body = document.getElementById('p1-body');
+    const icon = document.getElementById('p1-toggle-icon');
+    if (body) { body.style.display = p1BodyOpen ? 'block' : 'none'; body.className = p1BodyOpen ? 'open' : ''; }
     if (icon) icon.className = 'p1-toggle-icon' + (p1BodyOpen ? ' open' : '');
     try { localStorage.setItem(P1_LS_KEY_OPEN, p1BodyOpen ? '1' : '0'); } catch(e) {}
   } catch(e) {}
@@ -3120,9 +3120,9 @@ function p1LoadOpenState() {
     const saved = localStorage.getItem(P1_LS_KEY_OPEN);
     if (saved === '1') {
       p1BodyOpen = true;
-      const body = $('p1-body');
-      const icon = $('p1-toggle-icon');
-      if (body) body.className = 'open';
+      const body = document.getElementById('p1-body');
+      const icon = document.getElementById('p1-toggle-icon');
+      if (body) { body.style.display = 'block'; body.className = 'open'; }
       if (icon) icon.className = 'p1-toggle-icon open';
     }
   } catch(e) {}
@@ -3522,9 +3522,9 @@ function p4Save() {
 function p4ToggleBody() {
   try {
     p4BodyOpen = !p4BodyOpen;
-    const body = p4$('p4-body');
-    const icon = p4$('p4-toggle-icon');
-    if (body) body.className = p4BodyOpen ? 'open' : '';
+    const body = document.getElementById('p4-body');
+    const icon = document.getElementById('p4-toggle-icon');
+    if (body) { body.style.display = p4BodyOpen ? 'block' : 'none'; body.className = p4BodyOpen ? 'open' : ''; }
     if (icon) icon.className = 'p4-toggle-icon' + (p4BodyOpen ? ' open' : '');
     try { localStorage.setItem(P4_LS_OPEN_KEY, p4BodyOpen ? '1' : '0'); } catch(e) {}
   } catch(e) {}
@@ -3534,9 +3534,9 @@ function p4LoadOpenState() {
   try {
     if (localStorage.getItem(P4_LS_OPEN_KEY) === '1') {
       p4BodyOpen = true;
-      const body = p4$('p4-body');
-      const icon = p4$('p4-toggle-icon');
-      if (body) body.className = 'open';
+      const body = document.getElementById('p4-body');
+      const icon = document.getElementById('p4-toggle-icon');
+      if (body) { body.style.display = 'block'; body.className = 'open'; }
       if (icon) icon.className = 'p4-toggle-icon open';
     }
   } catch(e) {}
@@ -3640,7 +3640,7 @@ function p4AddEntry(snap, l4, l5) {
     p4Save();
     p4Render();
     // Auto-open P4 body when new entry is added
-    if (!p4BodyOpen) p4ToggleBody();
+    if (!p4BodyOpen) { p4BodyOpen = true; const b=document.getElementById('p4-body'); if(b){b.style.display='block';b.className='open';} const ic=document.getElementById('p4-toggle-icon'); if(ic)ic.className='p4-toggle-icon open'; }
   } catch(e) {
     console.warn('p4AddEntry error:', e.message);
   }
