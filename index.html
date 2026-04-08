@@ -361,8 +361,258 @@ overflow: hidden;
 .risk-row { grid-template-columns: repeat(4, 1fr); }
 .decision-action { font-size: 40px; }
 }
-</style>
 
+/* ═══════════════════════════════════════════════════════
+P3 DECISION SECTION STYLES
+═══════════════════════════════════════════════════════ */
+
+/* P3 section wrapper */
+.p3-section {
+border-top: 3px solid #4da6ff;
+background-color: #0a0c0f;
+}
+.p3-section-hdr {
+padding: 10px 14px;
+background-color: #0d1a2e;
+border-bottom: 1px solid #1f3a5f;
+font-size: 11px;
+font-weight: 700;
+color: #4da6ff;
+letter-spacing: 1px;
+text-transform: uppercase;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+.p3-section-hdr .p3-dot {
+width: 7px; height: 7px; border-radius: 50%;
+background-color: #4da6ff; flex-shrink: 0;
+}
+.p3-section-hdr .p3-dot-green  { background-color: #00e676; }
+.p3-section-hdr .p3-dot-yellow { background-color: #ffca28; }
+.p3-section-hdr .p3-dot-red    { background-color: #ff5252; }
+
+/* Input snapshot cards */
+.p3-snapshot {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 6px;
+padding: 10px 12px;
+}
+.p3-snap-card {
+background-color: #111418;
+border: 1px solid #252b34;
+border-radius: 6px;
+padding: 8px 10px;
+}
+.p3-snap-label {
+font-size: 9px;
+font-weight: 700;
+color: #6e7e90;
+text-transform: uppercase;
+letter-spacing: .5px;
+margin-bottom: 4px;
+}
+.p3-snap-value {
+font-size: 13px;
+font-weight: 700;
+color: #b8c4d0;
+}
+.p3-snap-card.p3-snap-bull { border-color: #00c853; background-color: #001a00; }
+.p3-snap-card.p3-snap-bull .p3-snap-value { color: #00e676; }
+.p3-snap-card.p3-snap-bear { border-color: #8b0000; background-color: #1a0000; }
+.p3-snap-card.p3-snap-bear .p3-snap-value { color: #ff5252; }
+.p3-snap-card.p3-snap-warn { border-color: #7a5000; background-color: #1a1000; }
+.p3-snap-card.p3-snap-warn .p3-snap-value { color: #ffca28; }
+
+/* Validation error banner */
+.p3-validation-banner {
+margin: 10px 12px;
+padding: 10px 14px;
+background-color: #1a0500;
+border: 2px solid #ff5252;
+border-radius: 6px;
+font-size: 12px;
+color: #ff5252;
+font-weight: 600;
+display: none;
+}
+.p3-validation-banner.show { display: block; }
+.p3-validation-banner ul { margin: 4px 0 0 16px; font-weight: 400; }
+.p3-validation-banner li { margin-bottom: 2px; }
+
+/* Execute button */
+.p3-execute-wrap {
+padding: 10px 12px;
+border-bottom: 1px solid #252b34;
+}
+.p3-execute-btn {
+width: 100%;
+padding: 13px;
+background-color: #003366;
+color: #ffffff;
+border: 2px solid #4da6ff;
+border-radius: 8px;
+font-family: inherit;
+font-size: 15px;
+font-weight: 800;
+cursor: pointer;
+letter-spacing: .5px;
+-webkit-appearance: none;
+appearance: none;
+transition: opacity .15s;
+}
+.p3-execute-btn:disabled {
+background-color: #1a1f26;
+border-color: #3a4150;
+color: #6e7e90;
+cursor: not-allowed;
+}
+.p3-execute-btn:not(:disabled):active { opacity: .8; }
+
+/* L4 proposed action card */
+.p3-proposed-wrap { padding: 10px 12px; }
+.p3-proposed-card {
+background-color: #111418;
+border: 2px solid #252b34;
+border-radius: 8px;
+padding: 14px;
+}
+.p3-proposed-action {
+font-size: 22px;
+font-weight: 800;
+letter-spacing: 1px;
+color: #6e7e90;
+margin-bottom: 6px;
+}
+.p3-proposed-code {
+display: inline-block;
+font-size: 10px;
+font-weight: 700;
+padding: 2px 8px;
+border-radius: 3px;
+background-color: #0d1a2e;
+color: #4da6ff;
+border: 1px solid #4da6ff;
+letter-spacing: .3px;
+margin-bottom: 6px;
+}
+.p3-proposed-summary {
+font-size: 12px;
+color: #b8c4d0;
+line-height: 1.6;
+}
+
+/* L5 override card */
+.p3-override-wrap { padding: 10px 12px; }
+.p3-override-card {
+background-color: #111418;
+border: 2px solid #252b34;
+border-radius: 8px;
+padding: 12px 14px;
+}
+.p3-override-card.p3-override-ok {
+border-color: #00c853;
+background-color: #001a00;
+}
+.p3-override-card.p3-override-triggered {
+border-color: #ffca28;
+background-color: #1a1000;
+}
+.p3-override-status {
+font-size: 13px;
+font-weight: 700;
+margin-bottom: 4px;
+}
+.p3-override-status.ok    { color: #00e676; }
+.p3-override-status.warn  { color: #ffca28; }
+.p3-override-rule {
+display: inline-block;
+font-size: 11px;
+font-weight: 700;
+padding: 2px 8px;
+border-radius: 3px;
+background-color: #ff5252;
+color: #ffffff;
+margin-bottom: 6px;
+}
+.p3-override-reason {
+font-size: 12px;
+color: #b8c4d0;
+line-height: 1.5;
+}
+
+/* Final action panel — the big one */
+.p3-final-wrap { padding: 12px; }
+.p3-final-panel {
+border: 3px solid #3a4150;
+border-radius: 10px;
+padding: 22px 16px 18px;
+text-align: center;
+background-color: #111418;
+transition: all .25s;
+}
+.p3-final-label {
+font-size: 10px;
+font-weight: 700;
+color: #6e7e90;
+text-transform: uppercase;
+letter-spacing: 1px;
+margin-bottom: 8px;
+}
+.p3-final-action {
+font-size: 48px;
+font-weight: 900;
+letter-spacing: 3px;
+color: #6e7e90;
+margin-bottom: 8px;
+line-height: 1;
+}
+.p3-final-sub {
+font-size: 12px;
+color: #6e7e90;
+line-height: 1.6;
+}
+.p3-final-sub span { color: #b8c4d0; font-weight: 600; }
+
+/* Final panel colour states */
+.p3-final-panel.fa-不進場 { border-color: #3a4150; background-color: #111418; }
+.p3-final-panel.fa-不進場 .p3-final-action { color: #6e7e90; }
+.p3-final-panel.fa-觀察   { border-color: #ffca28; background-color: #1a1000; }
+.p3-final-panel.fa-觀察   .p3-final-action { color: #ffca28; }
+.p3-final-panel.fa-試單   { border-color: #00c853; background-color: #001a00; }
+.p3-final-panel.fa-試單   .p3-final-action { color: #00e676; }
+.p3-final-panel.fa-加碼   { border-color: #00e676; background-color: #002200; }
+.p3-final-panel.fa-加碼   .p3-final-action { color: #00e5ff; }
+.p3-final-panel.fa-續抱   { border-color: #4da6ff; background-color: #001133; }
+.p3-final-panel.fa-續抱   .p3-final-action { color: #4da6ff; }
+.p3-final-panel.fa-減碼   { border-color: #ffa726; background-color: #1a0f00; }
+.p3-final-panel.fa-減碼   .p3-final-action { color: #ffa726; }
+.p3-final-panel.fa-出場   { border-color: #ff5252; background-color: #1a0000; }
+.p3-final-panel.fa-出場   .p3-final-action { color: #ff5252; }
+
+/* Debug/error area */
+.p3-debug-area {
+margin: 8px 12px 12px;
+padding: 8px 12px;
+background-color: #1a0500;
+border: 1px solid #ff5252;
+border-radius: 5px;
+font-size: 11px;
+color: #ff8a80;
+font-family: ‘SF Mono’, monospace;
+display: none;
+white-space: pre-wrap;
+word-break: break-all;
+}
+.p3-debug-area.show { display: block; }
+
+@media (max-width: 768px) {
+.p3-snapshot { grid-template-columns: repeat(2, 1fr); }
+.p3-final-action { font-size: 52px; }
+}
+
+</style>
 </head>
 <body>
 
@@ -668,6 +918,79 @@ overflow: hidden;
   </div>
 
 </div><!-- /result-wrap -->
+
+<!-- ══════════════════════════════════════════════════
+     P3 TRADING DECISION SECTION
+══════════════════════════════════════════════════ -->
+<div id="p3-section" class="p3-section" style="display:none">
+
+  <!-- P3 Header -->
+  <div class="p3-section-hdr">
+    <span class="p3-dot"></span>P3 交易決策
+    <span style="margin-left:auto;font-size:10px;color:#3a4150;text-transform:none;font-weight:400">L4 + L5 — 單一決策出口</span>
+  </div>
+
+  <!-- Validation errors -->
+  <div id="p3-validation-banner" class="p3-validation-banner"></div>
+
+  <!-- Input snapshot -->
+  <div class="p3-section-hdr" style="background-color:#0a0c0f;border-color:#1a1f26;color:#6e7e90;">
+    <span class="p3-dot" style="background-color:#6e7e90"></span>輸入快照
+    <span style="margin-left:auto;font-size:9px;font-weight:400;text-transform:none">唯讀，來自 P2</span>
+  </div>
+  <div id="p3-snapshot" class="p3-snapshot"></div>
+
+  <!-- Execute button -->
+  <div class="p3-execute-wrap">
+    <button id="p3-execute-btn" class="p3-execute-btn" onclick="runP3Decision()">
+      ⚡ 執行交易決策
+    </button>
+  </div>
+
+  <!-- L4 Proposed Action -->
+  <div class="p3-section-hdr" style="background-color:#0a0c0f;border-color:#1a1f26;color:#6e7e90;">
+    <span class="p3-dot" style="background-color:#6e7e90"></span>L4 建議動作
+    <span style="margin-left:auto;font-size:9px;font-weight:400;text-transform:none">Trade Rule Engine — 不含 R 規則</span>
+  </div>
+  <div class="p3-proposed-wrap">
+    <div class="p3-proposed-card" id="p3-proposed-card">
+      <div class="p3-proposed-action" id="p3-proposed-action">—</div>
+      <div id="p3-proposed-code" class="p3-proposed-code" style="display:none"></div>
+      <div class="p3-proposed-summary" id="p3-proposed-summary">執行決策後顯示 L4 建議</div>
+    </div>
+  </div>
+
+  <!-- L5 Override -->
+  <div class="p3-section-hdr" style="background-color:#0a0c0f;border-color:#1a1f26;color:#6e7e90;">
+    <span class="p3-dot p3-dot-yellow"></span>L5 風控覆蓋
+    <span style="margin-left:auto;font-size:9px;font-weight:400;text-transform:none">Risk Control Engine</span>
+  </div>
+  <div class="p3-override-wrap">
+    <div class="p3-override-card" id="p3-override-card">
+      <div class="p3-override-status" id="p3-override-status">待執行</div>
+      <div id="p3-override-rule-wrap" style="display:none">
+        <span class="p3-override-rule" id="p3-override-rule"></span>
+      </div>
+      <div class="p3-override-reason" id="p3-override-reason">執行決策後顯示風控結果</div>
+    </div>
+  </div>
+
+  <!-- Final Action Panel -->
+  <div class="p3-section-hdr" style="background-color:#0d1a2e;border-color:#1f3a5f;color:#4da6ff;">
+    <span class="p3-dot p3-dot-red"></span>最終決策（唯一出口）
+  </div>
+  <div class="p3-final-wrap">
+    <div class="p3-final-panel" id="p3-final-panel">
+      <div class="p3-final-label">FINAL ACTION</div>
+      <div class="p3-final-action" id="p3-final-action">—</div>
+      <div class="p3-final-sub" id="p3-final-sub">執行決策後顯示結果</div>
+    </div>
+  </div>
+
+  <!-- Debug area (hidden unless error) -->
+  <div id="p3-debug-area" class="p3-debug-area"></div>
+
+</div><!-- /p3-section -->
 ```
 
   </div><!-- /output-panel -->
@@ -1405,6 +1728,531 @@ document.addEventListener('change', () => saveState());
 
 // Init：恢復上次填入的資料，但不自動執行分析
 loadState();
+
+// ══════════════════════════════════════════════════════════════════
+//  P3 STATE
+// ══════════════════════════════════════════════════════════════════
+let p3InputSnapshot = null;
+let p3L4Result      = null;
+let p3L5Result      = null;
+const VALID_ACTIONS = ['不進場','觀察','試單','加碼','續抱','減碼','出場'];
+
+// ══════════════════════════════════════════════════════════════════
+//  P3 ENTRY — called after P2 runAnalysis completes
+// ══════════════════════════════════════════════════════════════════
+function showP3Section(tags, scores, proposed, risk, d, P, mode) {
+  try {
+    // Build snapshot from live analysis data
+    p3InputSnapshot = {
+      symbol:       VS('symbol') || '—',
+      template:     currentTemplate,
+      mode:         mode,
+      score_composite:  scores.score_composite,
+      score_risk:       scores.score_risk,
+      score_trend:      scores.score_trend,
+      score_momentum:   scores.score_momentum,
+      score_chip:       scores.score_chip,
+      tag_price_structure: tags.price_structure,
+      tag_momentum:     tags.momentum,
+      tag_chip:         tags.chip,
+      tag_volume:       tags.volume,
+      tag_rsi_zone:     tags.rsi_zone,
+      position_pct:     d.position_pct ?? 0,
+      profit_pct:       d.profit_pct ?? 0,
+      price_high_recent: d.price_high_recent,
+      price_current:    d.price_current,
+      sl1:              d.sl1,
+      is_planned:       VS('is_planned') !== 'false',
+      // computed
+      is_in_loss:       (d.profit_pct ?? 0) < 0,
+      P:                P,  // template params
+    };
+
+    // Derive position state from pct
+    p3InputSnapshot.current_position_state = computePositionState(
+      p3InputSnapshot.position_pct, P.max_single
+    );
+
+    document.getElementById('p3-section').style.display = 'block';
+    renderP3Snapshot(p3InputSnapshot);
+    validateP3Inputs(p3InputSnapshot);
+
+    // Reset result panels
+    p3L4Result = null;
+    p3L5Result = null;
+    resetP3Results();
+
+  } catch(err) {
+    showP3Debug('showP3Section error: ' + err.message);
+  }
+}
+
+function computePositionState(pct, maxSingle) {
+  if (!pct || pct <= 0) return '無倉';
+  if (pct < maxSingle * 0.45) return '試單中';
+  if (pct < maxSingle * 0.85) return '已加碼';
+  return '接近上限';
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  SNAPSHOT RENDER
+// ══════════════════════════════════════════════════════════════════
+function snapshotClass(key, val) {
+  const bullKeys = { tag_price_structure: ['主升段','回測完成'],
+                     tag_momentum: ['動能加速'], tag_chip: ['籌碼偏多','籌碼短多'] };
+  const bearKeys = { tag_price_structure: ['下跌段','結構破壞'],
+                     tag_momentum: ['翻空'], tag_chip: ['籌碼偏空','籌碼短空'] };
+  const warnKeys = { tag_price_structure: ['回測中','整理末段'],
+                     tag_momentum: ['動能衰退','緩漲'] };
+  if (bullKeys[key]?.includes(val)) return 'p3-snap-bull';
+  if (bearKeys[key]?.includes(val)) return 'p3-snap-bear';
+  if (warnKeys[key]?.includes(val)) return 'p3-snap-warn';
+  return '';
+}
+
+function renderP3Snapshot(snap) {
+  try {
+    const el = document.getElementById('p3-snapshot');
+    if (!el) return;
+    const items = [
+      { key:'symbol',              label:'標的',      val: snap.symbol },
+      { key:'mode',                label:'模式',      val: snap.mode || '未定' },
+      { key:'template',            label:'模板',      val: `${snap.template} ${({A:'短線',B:'波段',C:'趨勢'})[snap.template]||''}` },
+      { key:'score_composite',     label:'綜合分',    val: snap.score_composite ?? '—' },
+      { key:'score_risk',          label:'風險分',    val: snap.score_risk ?? '—' },
+      { key:'tag_price_structure', label:'價格結構',  val: snap.tag_price_structure || '—' },
+      { key:'tag_momentum',        label:'動能狀態',  val: snap.tag_momentum || '—' },
+      { key:'tag_chip',            label:'籌碼',      val: snap.tag_chip || '—' },
+      { key:'current_position_state', label:'持倉狀態', val: snap.current_position_state },
+      { key:'position_pct',        label:'持倉 %',   val: snap.position_pct + '%' },
+      { key:'profit_pct',          label:'損益 %',   val: (snap.profit_pct >= 0 ? '+' : '') + snap.profit_pct.toFixed(1) + '%' },
+      { key:'is_planned',          label:'計畫內',   val: snap.is_planned ? '✓ 是' : '✗ 否' },
+    ];
+    el.innerHTML = items.map(item => {
+      const cls = snapshotClass(item.key, item.val);
+      return `<div class="p3-snap-card ${cls}">
+        <div class="p3-snap-label">${item.label}</div>
+        <div class="p3-snap-value">${item.val}</div>
+      </div>`;
+    }).join('');
+  } catch(err) {
+    showP3Debug('renderP3Snapshot error: ' + err.message);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  VALIDATION
+// ══════════════════════════════════════════════════════════════════
+function validateP3Inputs(snap) {
+  const errors = [];
+  if (!snap.mode || (snap.mode !== 'A' && snap.mode !== 'B'))
+    errors.push('交易模式未設定 — 請在頂部選擇 A 或 B 模式');
+  if (!snap.template)
+    errors.push('模板未設定 — 請選擇 A / B / C 模板');
+  if (snap.score_composite == null || isNaN(snap.score_composite))
+    errors.push('綜合評分缺漏 — 請填入必要欄位後重新執行分析');
+  if (snap.score_risk == null || isNaN(snap.score_risk))
+    errors.push('風險分數缺漏 — 請填入必要欄位後重新執行分析');
+  if (!snap.tag_price_structure)
+    errors.push('價格結構標籤缺漏 — 請填入 SH1/SH2/SL1/SL2 後重新分析');
+  if (!snap.tag_momentum)
+    errors.push('動能標籤缺漏 — 請填入 RSI / MACD 欄位後重新分析');
+
+  const banner = document.getElementById('p3-validation-banner');
+  const btn    = document.getElementById('p3-execute-btn');
+
+  if (errors.length > 0) {
+    banner.className = 'p3-validation-banner show';
+    banner.innerHTML = `<strong>⚠ 缺少必要資料，無法執行決策：</strong>
+      <ul>${errors.map(e => `<li>${e}</li>`).join('')}</ul>`;
+    if (btn) btn.disabled = true;
+  } else {
+    banner.className = 'p3-validation-banner';
+    banner.innerHTML = '';
+    if (btn) btn.disabled = false;
+  }
+  return errors.length === 0;
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  RESET
+// ══════════════════════════════════════════════════════════════════
+function resetP3Results() {
+  try {
+    const pa = document.getElementById('p3-proposed-action');
+    const ps = document.getElementById('p3-proposed-summary');
+    const pc = document.getElementById('p3-proposed-code');
+    if (pa) pa.textContent = '—';
+    if (ps) ps.textContent = '執行決策後顯示 L4 建議';
+    if (pc) { pc.textContent = ''; pc.style.display = 'none'; }
+
+    const oc = document.getElementById('p3-override-card');
+    const os = document.getElementById('p3-override-status');
+    const or_ = document.getElementById('p3-override-reason');
+    const orw = document.getElementById('p3-override-rule-wrap');
+    if (oc) oc.className = 'p3-override-card';
+    if (os) { os.className = 'p3-override-status'; os.textContent = '待執行'; }
+    if (or_) or_.textContent = '執行決策後顯示風控結果';
+    if (orw) orw.style.display = 'none';
+
+    const fp = document.getElementById('p3-final-panel');
+    const fa = document.getElementById('p3-final-action');
+    const fs = document.getElementById('p3-final-sub');
+    if (fp) fp.className = 'p3-final-panel';
+    if (fa) fa.textContent = '—';
+    if (fs) fs.textContent = '執行決策後顯示結果';
+
+    const dbg = document.getElementById('p3-debug-area');
+    if (dbg) { dbg.className = 'p3-debug-area'; dbg.textContent = ''; }
+  } catch(err) {}
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  P3 L4 ENGINE  (v1.2 complete)
+// ══════════════════════════════════════════════════════════════════
+function runP3L4(snap) {
+  const sc = snap.score_composite;
+  const sr = snap.score_risk;
+  const ps = snap.tag_price_structure;
+  const mo = snap.tag_momentum;
+  const mode = snap.mode;
+  const posState = snap.current_position_state;
+  const hasPos = posState !== '無倉';
+  const P = snap.P;
+
+  // ── Step 1: Risk Gating (v1.2 Fix-1) ──────────────────────────
+  if (sr >= 70) {
+    if (!hasPos) return out('不進場', 'NO_ENTRY_SCORE', `score_risk=${sr}≥70，極高風險，禁止進場`);
+    // has position: can hold/reduce/exit but NOT add
+    // fall through to decision table with add blocked
+  }
+  if (sr >= 50 && sr < 70) {
+    if (!hasPos) return out('觀察', 'OBSERVE', `score_risk=${sr} 50~69，無倉禁止試單→觀察`);
+    // has position: block add, fall through
+  }
+
+  // ── Step 2: B mode hard threshold (v1.2 Fix-2) ────────────────
+  if (mode === 'B' && !hasPos && sc < 80) {
+    return out('不進場', 'NO_ENTRY_MODE', `B模式進場硬性門檻80分，composite=${sc}<80`);
+  }
+
+  // ── Step 3: Structure overrides ───────────────────────────────
+  if (ps === '下跌段') {
+    if (hasPos) return out('出場', 'EXIT_TREND', '下跌段確認，趨勢反轉，L5執行R4d');
+    return out('不進場', 'NO_ENTRY_SCORE', '下跌段，不建多倉');
+  }
+  if (ps === '結構破壞') {
+    if (hasPos) return out('出場', 'EXIT_STRUCT', '結構破壞，L5執行R4b或R4c');
+    return out('不進場', 'NO_ENTRY_SCORE', '結構破壞，不建新倉');
+  }
+
+  // ── Step 3: Momentum override ─────────────────────────────────
+  if (mo === '翻空') {
+    if (hasPos) return out('減碼', 'REDUCE_WRONG', '動能翻空，H4走錯，先行減碼');
+    return out('不進場', 'NO_ENTRY_SCORE', '動能翻空，不建多倉');
+  }
+
+  // ── Step 3: Position-state overrides ─────────────────────────
+  if (posState === '接近上限') {
+    return out('續抱', 'HOLD', '持倉接近上限，禁止加碼，維持續抱');
+  }
+
+  // ── Step 3: score gate ────────────────────────────────────────
+  const entryMin = (mode === 'B') ? Math.max(P.entry_min, 80) : P.entry_min;
+  if (sc < entryMin && !hasPos) {
+    return out('不進場', 'NO_ENTRY_SCORE', `composite=${sc}<進場門檻${entryMin}`);
+  }
+
+  // ── Step 3: Decision Table ────────────────────────────────────
+  const canEntryStruct = (ps === '主升段' || ps === '回測完成' || ps === '整理末段');
+  const trialPct = (mode === 'B') ? 15 : P.trial_pct;
+  const addPct   = (mode === 'B') ? (sc >= 90 ? 15 : 10) : P.add_pct;
+
+  // 無倉進場
+  if (!hasPos) {
+    if (ps === '回測中') return out('觀察', 'OBSERVE', '回測仍在進行，等待回測完成再進場');
+    if (canEntryStruct && sc >= entryMin) {
+      // extra check: add-block when risk 50~69
+      if (sr >= 50) return out('觀察', 'OBSERVE', `score_risk=${sr}≥50，無倉禁止試單→觀察`);
+      return out('試單', 'ENTRY_TRIAL',
+        `${ps}，${mo}，score=${sc}，建立試單 ${trialPct}%（${mode}模式）`,
+        { trial_pct: trialPct });
+    }
+    return out('觀察', 'OBSERVE', '條件未完全符合，觀察等待');
+  }
+
+  // 有倉：動能衰退先減
+  if (mo === '動能衰退') {
+    return out('減碼', 'REDUCE_WEAK', `動能衰退，H3先行減碼`);
+  }
+
+  // 有倉加碼
+  if (posState === '試單中') {
+    if (sc >= P.add_min) {
+      // risk block add if 50~69
+      if (sr >= 50) return out('續抱', 'HOLD', `score_risk=${sr}≥50，禁止加碼，降為續抱`);
+      return out('加碼', 'ENTRY_ADD',
+        `${ps}，score=${sc}≥${P.add_min}，加碼 ${addPct}%（${mode}模式）`,
+        { add_pct: addPct });
+    }
+  }
+
+  // 有倉續抱
+  return out('續抱', 'HOLD', 'H1：結構未壞，動能正常，續抱');
+
+  function out(action, code, summary, extra) {
+    return { proposed_action: action, l4_reason_code: code,
+             l4_reason_summary: summary, ...(extra||{}) };
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  P3 L5 ENGINE  (v1.2 complete)
+// ══════════════════════════════════════════════════════════════════
+function runP3L5(l4, snap) {
+  const triggered = [];
+  const pos    = snap.position_pct ?? 0;
+  const hasPos = pos > 0;
+  const profit = snap.profit_pct ?? 0;
+  const P      = snap.P;
+  const pa     = l4.proposed_action;
+
+  // ── Entry Override Priority (no position) ──────────────────────
+  if (!hasPos) {
+    // R8
+    if (!snap.is_planned && (pa === '試單' || pa === '加碼')) {
+      return mkOverride('不進場','R8','非計畫內交易，R8觸發禁止下單', triggered);
+    }
+    // R5 (prevent entry that would exceed limit)
+    if (pos >= P.max_single) {
+      return mkOverride('不進場','R5',`單一持股已達上限${P.max_single}%，禁止建倉`, triggered);
+    }
+    // R6
+    if (snap.is_in_loss && (pa === '試單' || pa === '加碼')) {
+      return mkOverride('不進場','R6','虧損中禁止攤平（R6）', triggered);
+    }
+    // No override
+    return mkClean(pa);
+  }
+
+  // ── Position Override Priority (has position) ──────────────────
+  // R4d — highest
+  if (snap.tag_price_structure === '下跌段') {
+    triggered.push({ rule:'R4d', type:'clear', pct:null, detail:'下跌段確認，R4d 全清出場' });
+  }
+  // R4c — next
+  if (snap.tag_price_structure === '結構破壞' && snap.sl1 && snap.price_current) {
+    const slPrice = snap.sl1 * (1 + P.sl_offset / 100);
+    if (snap.price_current <= slPrice) {
+      triggered.push({ rule:'R4c', type:'clear', pct:null, detail:`跌破停損位${slPrice.toFixed(1)}，R4c全清` });
+    } else {
+      triggered.push({ rule:'R4b', type:'reduce', pct:-50, detail:'結構破壞，R4b強制減碼50%' });
+    }
+  }
+  // R4a — trailing stop
+  if (snap.tag_price_structure !== '結構破壞' && snap.tag_price_structure !== '下跌段') {
+    if (snap.price_high_recent && snap.price_current) {
+      const drawdown = (snap.price_current - snap.price_high_recent) / snap.price_high_recent * 100;
+      if (drawdown <= -P.r4_drawdown) {
+        triggered.push({ rule:'R4a', type:'reduce', pct:-30,
+          detail:`自高點回落${Math.abs(drawdown).toFixed(1)}%≥${P.r4_drawdown}%，R4a減碼30%` });
+      }
+    }
+  }
+  // R1
+  if (profit >= P.r1_profit) {
+    triggered.push({ rule:'R1', type:'reduce', pct:-50,
+      detail:`獲利${profit.toFixed(1)}%≥${P.r1_profit}%，R1鎖利減碼50%` });
+  }
+  // R8 (position but not planned — flag only, don't force exit)
+  if (!snap.is_planned) {
+    triggered.push({ rule:'R8', type:'flag', pct:null, detail:'非計畫內交易，已記 C2+C8' });
+  }
+  // R5 block add
+  if (pos >= P.max_single && (pa === '加碼')) {
+    triggered.push({ rule:'R5', type:'block_add', pct:null,
+      detail:`持股${pos}%達上限${P.max_single}%，禁止加碼` });
+  }
+  // R6 block add
+  if (snap.is_in_loss && pa === '加碼') {
+    triggered.push({ rule:'R6', type:'block_add', pct:null, detail:'虧損中禁止攤平（R6）' });
+  }
+
+  if (triggered.length === 0) return mkClean(pa);
+
+  // ── Conflict Resolution (v1.2 Fix-5) ──────────────────────────
+  const clears   = triggered.filter(r => r.type === 'clear');
+  const reduces  = triggered.filter(r => r.type === 'reduce');
+  const blocks   = triggered.filter(r => r.type === 'block_add');
+
+  if (clears.length > 0) {
+    // clear wins
+    return mkOverride('出場', clears[0].rule, clears[0].detail, triggered);
+  }
+  if (reduces.length > 0) {
+    // take max reduction (most negative pct)
+    const maxR = reduces.reduce((m,r) => Math.abs(r.pct) > Math.abs(m.pct) ? r : m, reduces[0]);
+    return mkOverride('減碼', maxR.rule, maxR.detail, triggered);
+  }
+  if (blocks.length > 0 && pa === '加碼') {
+    return mkOverride('續抱', blocks[0].rule, blocks[0].detail, triggered);
+  }
+
+  // R8 flag only — no action override
+  return mkClean(pa, triggered);
+
+  function mkOverride(fa, rule, reason, allTriggered) {
+    return { final_action: fa, override_triggered: true,
+             override_rule: rule, override_reason: reason,
+             triggered_rules: allTriggered || [] };
+  }
+  function mkClean(fa, allTriggered) {
+    return { final_action: fa, override_triggered: false,
+             override_rule: '', override_reason: '',
+             triggered_rules: allTriggered || [] };
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  MAIN P3 EXECUTION
+// ══════════════════════════════════════════════════════════════════
+function runP3Decision() {
+  try {
+    if (!p3InputSnapshot) {
+      showP3Debug('p3InputSnapshot 為空，請先執行 P2 分析');
+      return;
+    }
+    if (!validateP3Inputs(p3InputSnapshot)) return;
+
+    const btn = document.getElementById('p3-execute-btn');
+    if (btn) { btn.disabled = true; btn.textContent = '計算中…'; }
+
+    // Run L4
+    p3L4Result = runP3L4(p3InputSnapshot);
+    if (!p3L4Result) throw new Error('L4 返回空值');
+
+    // Validate L4 output
+    if (!VALID_ACTIONS.includes(p3L4Result.proposed_action)) {
+      throw new Error(`L4 proposed_action 非合法值: ${p3L4Result.proposed_action}`);
+    }
+
+    // Run L5
+    p3L5Result = runP3L5(p3L4Result, p3InputSnapshot);
+    if (!p3L5Result) throw new Error('L5 返回空值');
+
+    // Validate L5 output
+    if (!VALID_ACTIONS.includes(p3L5Result.final_action)) {
+      throw new Error(`L5 final_action 非合法值: ${p3L5Result.final_action}`);
+    }
+    if (p3L5Result.override_triggered && !p3L5Result.override_rule) {
+      throw new Error('override_triggered=true 但 override_rule 為空');
+    }
+
+    renderP3Results(p3L4Result, p3L5Result, p3InputSnapshot);
+
+    if (btn) { btn.disabled = false; btn.textContent = '⚡ 執行交易決策'; }
+    clearP3Debug();
+
+  } catch(err) {
+    showP3Debug('runP3Decision 錯誤: ' + err.message + '\n' + (err.stack || ''));
+    const btn = document.getElementById('p3-execute-btn');
+    if (btn) { btn.disabled = false; btn.textContent = '⚡ 執行交易決策'; }
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  RENDER P3 RESULTS
+// ══════════════════════════════════════════════════════════════════
+function renderP3Results(l4, l5, snap) {
+  try {
+    // ── L4 card ──
+    const paEl  = document.getElementById('p3-proposed-action');
+    const pcEl  = document.getElementById('p3-proposed-code');
+    const psEl  = document.getElementById('p3-proposed-summary');
+    if (paEl) {
+      paEl.textContent = l4.proposed_action;
+      paEl.className   = 'p3-proposed-action action-' + l4.proposed_action;
+    }
+    if (pcEl) {
+      pcEl.textContent = l4.l4_reason_code;
+      pcEl.style.display = 'inline-block';
+    }
+    if (psEl) psEl.textContent = l4.l4_reason_summary || '—';
+
+    // ── L5 override card ──
+    const ocEl  = document.getElementById('p3-override-card');
+    const osEl  = document.getElementById('p3-override-status');
+    const orwEl = document.getElementById('p3-override-rule-wrap');
+    const orEl  = document.getElementById('p3-override-rule');
+    const oreEl = document.getElementById('p3-override-reason');
+
+    if (l5.override_triggered) {
+      if (ocEl) ocEl.className = 'p3-override-card p3-override-triggered';
+      if (osEl) { osEl.className = 'p3-override-status warn'; osEl.textContent = '⚠ 風控覆蓋觸發'; }
+      if (orwEl) orwEl.style.display = 'block';
+      if (orEl) orEl.textContent = l5.override_rule;
+      if (oreEl) oreEl.textContent = l5.override_reason;
+    } else {
+      if (ocEl) ocEl.className = 'p3-override-card p3-override-ok';
+      if (osEl) { osEl.className = 'p3-override-status ok'; osEl.textContent = '✓ 風控通過，無覆蓋'; }
+      if (orwEl) orwEl.style.display = 'none';
+      if (oreEl) oreEl.textContent = '所有風控規則（R1/R4/R5/R6/R8）均未觸發';
+    }
+
+    // ── Final action panel ──
+    const fa   = l5.final_action;
+    const fpEl = document.getElementById('p3-final-panel');
+    const faEl = document.getElementById('p3-final-action');
+    const fsEl = document.getElementById('p3-final-sub');
+
+    if (fpEl) fpEl.className = `p3-final-panel fa-${fa}`;
+    if (faEl) faEl.textContent = fa;
+    if (fsEl) {
+      const symbol = snap.symbol || '—';
+      const override = l5.override_triggered
+        ? `<span>[${l5.override_rule}]</span> 覆蓋 L4 建議`
+        : `L4 建議：<span>${l4.proposed_action}</span>，風控通過`;
+      fsEl.innerHTML = `<span>${symbol}</span> &nbsp;|&nbsp; 模式 <span>${snap.mode}</span> &nbsp;|&nbsp; 模板 <span>${snap.template}</span><br>${override}`;
+    }
+
+    // Scroll into view on mobile
+    if (fpEl) {
+      setTimeout(() => fpEl.scrollIntoView({ behavior:'smooth', block:'nearest' }), 100);
+    }
+
+  } catch(err) {
+    showP3Debug('renderP3Results 錯誤: ' + err.message);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  DEBUG HELPERS
+// ══════════════════════════════════════════════════════════════════
+function showP3Debug(msg) {
+  const el = document.getElementById('p3-debug-area');
+  if (!el) return;
+  el.className = 'p3-debug-area show';
+  el.textContent = '[P3 Error] ' + msg;
+}
+function clearP3Debug() {
+  const el = document.getElementById('p3-debug-area');
+  if (el) { el.className = 'p3-debug-area'; el.textContent = ''; }
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  HOOK INTO EXISTING runAnalysis
+//  We patch renderOutput to also call showP3Section
+// ══════════════════════════════════════════════════════════════════
+(function patchRenderOutput() {
+  const _original = window.renderOutput;
+  window.renderOutput = function(tags, scores, proposed, risk, sl, d, P, mode) {
+    try { _original(tags, scores, proposed, risk, sl, d, P, mode); } catch(e) {}
+    try { showP3Section(tags, scores, proposed, risk, d, P, mode); } catch(e) {
+      showP3Debug('showP3Section hook error: ' + e.message);
+    }
+  };
+})();
+
 </script>
 
 </body>
