@@ -1793,6 +1793,18 @@ function p1AddToWatchlist() {
 function p1RemoveFromWatchlist(name) {
   try { p1Watchlist = p1Watchlist.filter(function(s) { return s !== name; }); p1SaveWatchlist(); p1RenderWatchlist(); p1SyncSymbolPlanned(); p1UpdateSummary(); } catch(e) {}
 }
+function p1RemoveByIndex(btn) {
+  try {
+    var idx = parseInt(btn.getAttribute('data-idx'), 10);
+    if (!isNaN(idx) && idx >= 0 && idx < p1Watchlist.length) {
+      p1Watchlist.splice(idx, 1);
+      p1SaveWatchlist();
+      p1RenderWatchlist();
+      p1SyncSymbolPlanned();
+      p1UpdateSummary();
+    }
+  } catch(e) {}
+}
 function p1IsInWatchlist(symbolVal) {
   if (!symbolVal) return false;
   var s = symbolVal.toLowerCase().trim();
@@ -1812,14 +1824,29 @@ function p1RenderWatchlist() {
     if (cnt2)  cnt2.textContent  = n + ' 檔';
     if (badge) badge.textContent = '候選：' + n + ' 檔';
     if (!list) return;
-    if (n === 0) { list.innerHTML = '<div class="p1-watchlist-empty">尚未加入任何候選股</div>'; return; }
+    if (n === 0) {
+      list.innerHTML = '<div class="p1-watchlist-empty">尚未加入任何候選股</div>';
+      return;
+    }
     var currentSymbol = piv('symbol');
-    list.innerHTML = p1Watchlist.map(function(name) {
-      var isActive = p1IsInWatchlist(currentSymbol) && (name.toLowerCase() === currentSymbol.toLowerCase() || currentSymbol.toLowerCase().indexOf(name.toLowerCase()) >= 0 || name.toLowerCase().indexOf(currentSymbol.toLowerCase()) >= 0);
-      return '<div class="p1-watchlist-item '+(isActive ? 'p1-wl-active' : '')+'">'+(isActive ? '<span class="p1-wl-badge">分析中</span>' : '')+'<span class="p1-wl-name">'+p1EscHtml(name)+'</span><button class="p1-wl-del" onclick="p1RemoveFromWatchlist('+JSON.stringify(name)+')" title="移除">x</button></div>';
-    }).join('');
+    var html = '';
+    for (var i = 0; i < p1Watchlist.length; i++) {
+      var name = p1Watchlist[i];
+      var isActive = p1IsInWatchlist(currentSymbol) && (
+        name.toLowerCase() === currentSymbol.toLowerCase() ||
+        currentSymbol.toLowerCase().indexOf(name.toLowerCase()) >= 0 ||
+        name.toLowerCase().indexOf(currentSymbol.toLowerCase()) >= 0
+      );
+      html += '<div class="p1-watchlist-item ' + (isActive ? 'p1-wl-active' : '') + '">';
+      if (isActive) html += '<span class="p1-wl-badge">分析中</span>';
+      html += '<span class="p1-wl-name">' + p1EscHtml(name) + '</span>';
+      html += '<button class="p1-wl-del" data-idx="' + i + '" onclick="p1RemoveByIndex(this)" title="移除">x</button>';
+      html += '</div>';
+    }
+    list.innerHTML = html;
   } catch(e) {}
 }
+
 function p1SyncSymbolPlanned() {
   try {
     var symbolVal = piv('symbol');
