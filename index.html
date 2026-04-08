@@ -304,11 +304,11 @@ text-align: center;
 position: relative;
 overflow: hidden;
 }
-.score-card::after {content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 4px; background-color: #3a4150; }
-.score-card.filled::after { background-color: var(-- score-color, #4da6ff); }
+.score-card::after { content: ‘’; position: absolute; bottom: 0; left: 0; right: 0; height: 4px; background-color: #3a4150; }
+.score-card.filled::after { background-color: var(–score-color, #4da6ff); }
 .score-label { font-size: 10px; font-weight: 700; color: #6e7e90; text-transform: uppercase; letter-spacing: .5px; }
 .score-value { font-size: 26px; font-weight: 800; margin: 4px 0 2px; color: #b8c4d0; }
-.score-card.filled .score-value { color: var(-- score-color, #4da6ff); }
+.score-card.filled .score-value { color: var(–score-color, #4da6ff); }
 .score-sub { font-size: 9px; color: #6e7e90; }
 
 /* === COMPOSITE BAR === */
@@ -316,8 +316,8 @@ overflow: hidden;
 .composite-bar-label { display: flex; justify-content: space-between; margin-bottom: 7px; font-size: 13px; font-weight: 600; color: #b8c4d0; }
 .composite-bar-track { height: 10px; background-color: #252b34; border-radius: 5px; overflow: hidden; position: relative; }
 .composite-bar-fill { height: 100%; border-radius: 5px; transition: width .4s, background-color .4s; background-color: #3a4150; }
-.composite-bar-track::before {content: ''; position: absolute; left: 60%; top: 0; bottom: 0; width: 2px; background-color: #6e7e90; opacity: .5; }
-.composite-bar-track::after  {content: ''; position: absolute; left: 80%; top: 0; bottom: 0; width: 2px; background-color: #6e7e90; opacity: .5; }
+.composite-bar-track::before { content: ‘’; position: absolute; left: 60%; top: 0; bottom: 0; width: 2px; background-color: #6e7e90; opacity: .5; }
+.composite-bar-track::after  { content: ‘’; position: absolute; left: 80%; top: 0; bottom: 0; width: 2px; background-color: #6e7e90; opacity: .5; }
 .bar-markers { position: relative; height: 16px; margin-top: 3px; }
 .bar-m60 { position: absolute; left: 60%; transform: translateX(-50%); font-size: 10px; color: #6e7e90; font-weight: 600; }
 .bar-m80 { position: absolute; left: 80%; transform: translateX(-50%); font-size: 10px; color: #6e7e90; font-weight: 600; }
@@ -595,7 +595,7 @@ border: 1px solid #ff5252;
 border-radius: 5px;
 font-size: 11px;
 color: #ff8a80;
-font-family: ' SF Mono ', monospace;
+font-family: ‘SF Mono’, monospace;
 display: none;
 white-space: pre-wrap;
 word-break: break-all;
@@ -1094,7 +1094,6 @@ width: 7px; height: 7px;
 border-radius: 50%;
 background-color: #ff5252;
 flex-shrink: 0;
-title: '非計畫內交易';
 }
 
 /* Entry detail panel */
@@ -3876,7 +3875,7 @@ p4Load();
 p4LoadOpenState();
 p4Render();
 } catch(e) {
-console.warn(' p4Init error: ', e.message);
+console.warn(‘p4Init error:’, e.message);
 }
 })();
 
