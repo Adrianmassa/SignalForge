@@ -612,6 +612,332 @@ word-break: break-all;
 .p3-final-action { font-size: 52px; }
 }
 
+/* ═══════════════════════════════════════════════════════
+P1 PRE-MARKET DASHBOARD STYLES
+═══════════════════════════════════════════════════════ */
+
+/* P1 top wrapper — sits between header and .layout */
+#p1-dashboard {
+background-color: #0d1117;
+border-bottom: 3px solid #1f3a5f;
+}
+
+/* P1 main header bar */
+.p1-header {
+background-color: #0d1a2e;
+border-bottom: 2px solid #1f3a5f;
+padding: 10px 16px;
+display: flex;
+align-items: center;
+gap: 10px;
+cursor: pointer;
+user-select: none;
+}
+.p1-header-title {
+font-size: 13px;
+font-weight: 700;
+color: #4da6ff;
+letter-spacing: .5px;
+}
+.p1-header-badge {
+font-size: 10px;
+padding: 2px 7px;
+border-radius: 10px;
+font-weight: 700;
+background-color: #001a33;
+color: #4da6ff;
+border: 1px solid #1f3a5f;
+}
+.p1-toggle-icon {
+margin-left: auto;
+font-size: 14px;
+color: #6e7e90;
+transition: transform .2s;
+}
+.p1-toggle-icon.open { transform: rotate(180deg); }
+
+/* P1 collapsible body */
+#p1-body {
+display: none;
+}
+#p1-body.open { display: block; }
+
+/* P1 three-card grid */
+.p1-grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 0;
+}
+@media (max-width: 768px) {
+.p1-grid { grid-template-columns: 1fr; }
+}
+
+/* P1 card base */
+.p1-card {
+background-color: #111418;
+border-right: 1px solid #1a1f26;
+border-bottom: 1px solid #1a1f26;
+padding: 0;
+}
+.p1-card:last-child { border-right: none; }
+
+.p1-card-hdr {
+padding: 8px 12px;
+background-color: #0d1a2e;
+border-bottom: 1px solid #1f3a5f;
+font-size: 10px;
+font-weight: 700;
+color: #4da6ff;
+letter-spacing: .8px;
+text-transform: uppercase;
+display: flex;
+align-items: center;
+gap: 6px;
+}
+.p1-card-hdr .p1-dot {
+width: 6px; height: 6px;
+border-radius: 50%;
+background-color: #4da6ff;
+flex-shrink: 0;
+}
+.p1-card-hdr .p1-dot-green  { background-color: #00e676; }
+.p1-card-hdr .p1-dot-yellow { background-color: #ffca28; }
+.p1-card-hdr .p1-dot-red    { background-color: #ff5252; }
+
+.p1-card-body { padding: 10px 12px; }
+
+/* Market condition selects */
+.p1-field { margin-bottom: 8px; }
+.p1-field:last-of-type { margin-bottom: 0; }
+.p1-field label {
+display: block;
+font-size: 10px;
+font-weight: 700;
+color: #6e7e90;
+text-transform: uppercase;
+letter-spacing: .4px;
+margin-bottom: 3px;
+}
+.p1-field select {
+width: 100%;
+background-color: #1a1f26;
+border: 1px solid #3a4150;
+border-radius: 5px;
+color: #f0f4f8;
+font-family: inherit;
+font-size: 13px;
+font-weight: 600;
+padding: 6px 8px;
+outline: none;
+-webkit-appearance: none;
+appearance: none;
+background-image: url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘10’ height=‘6’ viewBox=‘0 0 10 6’%3E%3Cpath fill=’%236e7e90’ d=‘M5 6L0 0h10z’/%3E%3C/svg%3E”);
+background-repeat: no-repeat;
+background-position: right 8px center;
+padding-right: 26px;
+}
+.p1-field select:focus { border-color: #4da6ff; }
+.p1-field select option { background-color: #1a1f26; color: #f0f4f8; }
+
+/* Mode calc button */
+.p1-calc-btn {
+width: 100%;
+margin-top: 10px;
+padding: 9px;
+background-color: #001a33;
+color: #4da6ff;
+border: 1px solid #4da6ff;
+border-radius: 6px;
+font-family: inherit;
+font-size: 13px;
+font-weight: 700;
+cursor: pointer;
+-webkit-appearance: none;
+appearance: none;
+transition: background-color .15s;
+}
+.p1-calc-btn:disabled {
+background-color: #111418;
+border-color: #3a4150;
+color: #3a4150;
+cursor: not-allowed;
+}
+.p1-calc-btn:not(:disabled):active { background-color: #002244; }
+
+/* Mode result display */
+.p1-mode-result {
+margin-top: 10px;
+padding: 10px 12px;
+border-radius: 6px;
+background-color: #1a1f26;
+border: 1px solid #3a4150;
+display: none;
+}
+.p1-mode-result.show { display: block; }
+.p1-mode-result-action {
+font-size: 22px;
+font-weight: 900;
+letter-spacing: 2px;
+margin-bottom: 4px;
+}
+.p1-mode-a { color: #4da6ff; }
+.p1-mode-b { color: #00e676; }
+.p1-mode-source {
+font-size: 10px;
+color: #6e7e90;
+text-transform: uppercase;
+letter-spacing: .4px;
+margin-bottom: 3px;
+}
+.p1-mode-reason {
+font-size: 11px;
+color: #b8c4d0;
+line-height: 1.5;
+}
+
+/* Watchlist */
+.p1-watchlist-add {
+display: flex;
+gap: 6px;
+margin-bottom: 8px;
+}
+.p1-watchlist-input {
+flex: 1;
+background-color: #1a1f26;
+border: 1px solid #3a4150;
+border-radius: 5px;
+color: #f0f4f8;
+font-family: inherit;
+font-size: 13px;
+font-weight: 600;
+padding: 6px 10px;
+outline: none;
+-webkit-appearance: none;
+}
+.p1-watchlist-input:focus { border-color: #4da6ff; }
+.p1-watchlist-input::placeholder { color: #3a4150; font-weight: 400; }
+.p1-watchlist-add-btn {
+padding: 6px 12px;
+background-color: #003366;
+color: #4da6ff;
+border: 1px solid #4da6ff;
+border-radius: 5px;
+font-family: inherit;
+font-size: 13px;
+font-weight: 700;
+cursor: pointer;
+-webkit-appearance: none;
+white-space: nowrap;
+}
+.p1-watchlist-add-btn:active { opacity: .8; }
+
+.p1-watchlist-count {
+font-size: 10px;
+color: #6e7e90;
+margin-bottom: 6px;
+font-weight: 600;
+}
+.p1-watchlist-count span { color: #4da6ff; font-size: 13px; font-weight: 800; }
+
+.p1-watchlist-list {
+max-height: 140px;
+overflow-y: auto;
+display: flex;
+flex-direction: column;
+gap: 4px;
+}
+.p1-watchlist-list::-webkit-scrollbar { width: 3px; }
+.p1-watchlist-list::-webkit-scrollbar-thumb { background-color: #3a4150; border-radius: 2px; }
+
+.p1-watchlist-item {
+display: flex;
+align-items: center;
+justify-content: space-between;
+background-color: #1a1f26;
+border: 1px solid #252b34;
+border-radius: 5px;
+padding: 6px 10px;
+transition: border-color .15s;
+}
+.p1-watchlist-item.p1-wl-active {
+border-color: #00e676;
+background-color: #001a00;
+}
+.p1-watchlist-item.p1-wl-active .p1-wl-name { color: #00e676; }
+.p1-wl-name {
+font-size: 13px;
+font-weight: 600;
+color: #f0f4f8;
+}
+.p1-wl-badge {
+font-size: 9px;
+padding: 1px 5px;
+border-radius: 3px;
+background-color: #003300;
+color: #00e676;
+border: 1px solid #00c853;
+margin-right: 6px;
+font-weight: 700;
+}
+.p1-wl-del {
+background: none;
+border: none;
+color: #6e7e90;
+font-size: 14px;
+cursor: pointer;
+padding: 0 2px;
+line-height: 1;
+font-family: inherit;
+}
+.p1-wl-del:hover { color: #ff5252; }
+.p1-watchlist-empty {
+font-size: 11px;
+color: #3a4150;
+text-align: center;
+padding: 12px 0;
+font-style: italic;
+}
+
+/* Watchlist error */
+.p1-wl-error {
+font-size: 11px;
+color: #ff5252;
+font-weight: 600;
+margin-top: 4px;
+min-height: 16px;
+}
+
+/* System summary */
+.p1-summary-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 6px;
+}
+.p1-summary-item {
+background-color: #1a1f26;
+border: 1px solid #252b34;
+border-radius: 5px;
+padding: 7px 9px;
+}
+.p1-summary-label {
+font-size: 9px;
+font-weight: 700;
+color: #6e7e90;
+text-transform: uppercase;
+letter-spacing: .4px;
+margin-bottom: 3px;
+}
+.p1-summary-value {
+font-size: 13px;
+font-weight: 700;
+color: #b8c4d0;
+}
+.p1-summary-value.sv-a    { color: #4da6ff; }
+.p1-summary-value.sv-b    { color: #00e676; }
+.p1-summary-value.sv-none { color: #6e7e90; }
+.p1-summary-value.sv-yes  { color: #00e676; }
+.p1-summary-value.sv-no   { color: #ff5252; }
+
 </style>
 </head>
 <body>
@@ -630,6 +956,139 @@ word-break: break-all;
     <button class="mode-btn" id="mode-b"    onclick="setMode('B')">🛡 B模式</button>
   </div>
 </div>
+
+<!-- ══════════════════════════════════════════════════
+     P1 盤前總控台
+══════════════════════════════════════════════════ -->
+
+<div id="p1-dashboard">
+
+  <!-- Collapsible header -->
+
+  <div class="p1-header" onclick="p1ToggleBody()">
+    <span class="p1-header-title">🗂 P1 盤前總控台</span>
+    <span class="p1-header-badge" id="p1-mode-badge">模式：未定</span>
+    <span class="p1-header-badge" id="p1-wl-badge" style="background-color:#001a00;color:#00e676;border-color:#00c853">候選：0 檔</span>
+    <span class="p1-toggle-icon" id="p1-toggle-icon">▼</span>
+  </div>
+
+  <!-- Collapsible body -->
+
+  <div id="p1-body">
+    <div class="p1-grid">
+
+```
+  <!-- Card 1: 市場模式判斷 -->
+  <div class="p1-card">
+    <div class="p1-card-hdr">
+      <span class="p1-dot"></span>市場模式判斷
+    </div>
+    <div class="p1-card-body">
+      <div class="p1-field">
+        <label>大盤結構</label>
+        <select id="p1-index-structure" onchange="p1OnConditionChange()">
+          <option value="">— 請選擇 —</option>
+          <option value="強勢">強勢</option>
+          <option value="盤整">盤整</option>
+          <option value="弱勢">弱勢</option>
+        </select>
+      </div>
+      <div class="p1-field">
+        <label>族群強度</label>
+        <select id="p1-sector-strength" onchange="p1OnConditionChange()">
+          <option value="">— 請選擇 —</option>
+          <option value="主升">主升</option>
+          <option value="混沌">混沌</option>
+          <option value="退潮">退潮</option>
+        </select>
+      </div>
+      <div class="p1-field">
+        <label>帳戶狀態</label>
+        <select id="p1-account-status" onchange="p1OnConditionChange()">
+          <option value="">— 請選擇 —</option>
+          <option value="穩定">穩定</option>
+          <option value="受壓">受壓</option>
+        </select>
+      </div>
+      <div class="p1-field">
+        <label>盤感自評</label>
+        <select id="p1-market-feel" onchange="p1OnConditionChange()">
+          <option value="">— 請選擇 —</option>
+          <option value="清楚">清楚</option>
+          <option value="模糊">模糊</option>
+        </select>
+      </div>
+      <button class="p1-calc-btn" id="p1-calc-btn" onclick="p1CalcMode()" disabled>
+        計算今日模式
+      </button>
+      <div class="p1-mode-result" id="p1-mode-result">
+        <div class="p1-mode-source" id="p1-mode-source">mode_source: system</div>
+        <div class="p1-mode-result-action" id="p1-mode-result-action">—</div>
+        <div class="p1-mode-reason" id="p1-mode-reason">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 2: 候選名單 -->
+  <div class="p1-card">
+    <div class="p1-card-hdr">
+      <span class="p1-dot p1-dot-green"></span>候選名單
+      <span id="p1-wl-count-badge" style="margin-left:auto;font-size:10px;color:#00e676;font-weight:700;text-transform:none">0 檔</span>
+    </div>
+    <div class="p1-card-body">
+      <div class="p1-watchlist-add">
+        <input type="text" id="p1-wl-input" class="p1-watchlist-input"
+               placeholder="股票名稱或代號"
+               onkeydown="if(event.key==='Enter')p1AddToWatchlist()">
+        <button class="p1-watchlist-add-btn" onclick="p1AddToWatchlist()">+ 加入</button>
+      </div>
+      <div class="p1-wl-error" id="p1-wl-error"></div>
+      <div class="p1-watchlist-count">
+        今日候選：<span id="p1-wl-count">0</span> 檔
+      </div>
+      <div class="p1-watchlist-list" id="p1-watchlist-list">
+        <div class="p1-watchlist-empty">尚未加入任何候選股</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 3: 系統狀態摘要 -->
+  <div class="p1-card">
+    <div class="p1-card-hdr">
+      <span class="p1-dot p1-dot-yellow"></span>系統狀態
+    </div>
+    <div class="p1-card-body">
+      <div class="p1-summary-grid">
+        <div class="p1-summary-item">
+          <div class="p1-summary-label">今日模式</div>
+          <div class="p1-summary-value sv-none" id="p1-sum-mode">未定</div>
+        </div>
+        <div class="p1-summary-item">
+          <div class="p1-summary-label">模板</div>
+          <div class="p1-summary-value" id="p1-sum-template">B 波段</div>
+        </div>
+        <div class="p1-summary-item">
+          <div class="p1-summary-label">計畫內交易</div>
+          <div class="p1-summary-value sv-no" id="p1-sum-planned">否</div>
+        </div>
+        <div class="p1-summary-item">
+          <div class="p1-summary-label">系統狀態</div>
+          <div class="p1-summary-value sv-b">OFFLINE</div>
+        </div>
+        <div class="p1-summary-item" style="grid-column:1/-1">
+          <div class="p1-summary-label">模式來源</div>
+          <div class="p1-summary-value sv-none" id="p1-sum-source">尚未計算</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /p1-grid -->
+```
+
+  </div><!-- /p1-body -->
+
+</div><!-- /p1-dashboard -->
 
 <div class="layout">
 
@@ -2252,6 +2711,404 @@ function clearP3Debug() {
     }
   };
 })();
+
+
+// ══════════════════════════════════════════════════════════════════
+//  P1 STATE
+// ══════════════════════════════════════════════════════════════════
+let p1Watchlist   = [];   // string[]
+let p1ModeResult  = null; // { mode, reason, source }
+let p1BodyOpen    = false;
+
+const P1_LS_KEY_WL   = 'p1_watchlist';
+const P1_LS_KEY_MODE = 'p1_mode_context';
+const P1_LS_KEY_OPEN = 'p1_body_open';
+
+// ── Tiny safe DOM helpers ──────────────────────────────────────────
+const $  = id => document.getElementById(id);
+const $v = id => { const el = $(id); return el ? el.value.trim() : ''; };
+const $s = (id, text) => { const el = $(id); if (el) el.textContent = text; };
+const $cls = (id, cls) => { const el = $(id); if (el) el.className = cls; };
+
+// ══════════════════════════════════════════════════════════════════
+//  P1 INIT
+// ══════════════════════════════════════════════════════════════════
+function p1Init() {
+  try {
+    p1LoadWatchlist();
+    p1LoadModeContext();
+    p1LoadOpenState();
+    p1RenderWatchlist();
+    p1UpdateSummary();
+    p1SyncSymbolPlanned();
+  } catch(e) {
+    console.warn('p1Init error:', e.message);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  TOGGLE BODY
+// ══════════════════════════════════════════════════════════════════
+function p1ToggleBody() {
+  try {
+    p1BodyOpen = !p1BodyOpen;
+    const body = $('p1-body');
+    const icon = $('p1-toggle-icon');
+    if (body) body.className = p1BodyOpen ? 'open' : '';
+    if (icon) icon.className = 'p1-toggle-icon' + (p1BodyOpen ? ' open' : '');
+    try { localStorage.setItem(P1_LS_KEY_OPEN, p1BodyOpen ? '1' : '0'); } catch(e) {}
+  } catch(e) {}
+}
+
+function p1LoadOpenState() {
+  try {
+    const saved = localStorage.getItem(P1_LS_KEY_OPEN);
+    if (saved === '1') {
+      p1BodyOpen = true;
+      const body = $('p1-body');
+      const icon = $('p1-toggle-icon');
+      if (body) body.className = 'open';
+      if (icon) icon.className = 'p1-toggle-icon open';
+    }
+  } catch(e) {}
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  MODE CALCULATION
+// ══════════════════════════════════════════════════════════════════
+function p1OnConditionChange() {
+  try {
+    const filled = ['p1-index-structure','p1-sector-strength',
+                    'p1-account-status','p1-market-feel']
+                    .every(id => $v(id) !== '');
+    const btn = $('p1-calc-btn');
+    if (btn) btn.disabled = !filled;
+  } catch(e) {}
+}
+
+function p1CalcMode() {
+  try {
+    const index   = $v('p1-index-structure');
+    const sector  = $v('p1-sector-strength');
+    const account = $v('p1-account-status');
+    const feel    = $v('p1-market-feel');
+
+    if (!index || !sector || !account || !feel) {
+      alert('請先填完四個市場條件');
+      return;
+    }
+
+    // Score each condition
+    const conditions = [
+      { label: '大盤結構強勢', met: index === '強勢' },
+      { label: '族群主升',     met: sector === '主升' },
+      { label: '帳戶穩定',     met: account === '穩定' },
+      { label: '盤感清楚',     met: feel === '清楚' },
+    ];
+    const metCount = conditions.filter(c => c.met).length;
+    const mode = metCount >= 3 ? 'A' : 'B';
+
+    const metLabels = conditions.filter(c => c.met).map(c => c.label);
+    const notMet    = conditions.filter(c => !c.met).map(c => c.label);
+    const reason = mode === 'A'
+      ? `4 項中有 ${metCount} 項偏多（${metLabels.join('、')}），判定為 A 模式`
+      : `4 項中僅 ${metCount} 項偏多${metCount > 0 ? '（'+metLabels.join('、')+'）' : ''}，不足 3 項，判定為 B 模式`;
+
+    p1ModeResult = { mode, reason, source: 'system' };
+
+    // Persist
+    try {
+      localStorage.setItem(P1_LS_KEY_MODE, JSON.stringify({
+        mode, reason,
+        conditions: { index, sector, account, feel }
+      }));
+    } catch(e) {}
+
+    // Render result card
+    const resultEl = $('p1-mode-result');
+    if (resultEl) resultEl.className = 'p1-mode-result show';
+
+    $s('p1-mode-source', 'mode_source: system');
+    const actionEl = $('p1-mode-result-action');
+    if (actionEl) {
+      actionEl.textContent = mode === 'A' ? 'A 模式' : 'B 模式';
+      actionEl.className = 'p1-mode-result-action ' + (mode === 'A' ? 'p1-mode-a' : 'p1-mode-b');
+    }
+    $s('p1-mode-reason', reason);
+
+    // Sync to global mode + top header
+    setMode(mode);
+    p1UpdateSummary();
+
+  } catch(e) {
+    console.warn('p1CalcMode error:', e.message);
+  }
+}
+
+function p1LoadModeContext() {
+  try {
+    const raw = localStorage.getItem(P1_LS_KEY_MODE);
+    if (!raw) return;
+    const ctx = JSON.parse(raw);
+    if (!ctx || !ctx.mode) return;
+
+    p1ModeResult = { mode: ctx.mode, reason: ctx.reason || '', source: 'system' };
+
+    // Restore select values
+    if (ctx.conditions) {
+      const map = {
+        'p1-index-structure': ctx.conditions.index,
+        'p1-sector-strength': ctx.conditions.sector,
+        'p1-account-status':  ctx.conditions.account,
+        'p1-market-feel':     ctx.conditions.feel,
+      };
+      Object.entries(map).forEach(([id, val]) => {
+        const el = $(id);
+        if (el && val) el.value = val;
+      });
+    }
+
+    // Show result card
+    const resultEl = $('p1-mode-result');
+    if (resultEl) resultEl.className = 'p1-mode-result show';
+    $s('p1-mode-source', 'mode_source: system（已還原）');
+    const actionEl = $('p1-mode-result-action');
+    if (actionEl) {
+      actionEl.textContent = ctx.mode === 'A' ? 'A 模式' : 'B 模式';
+      actionEl.className = 'p1-mode-result-action ' + (ctx.mode === 'A' ? 'p1-mode-a' : 'p1-mode-b');
+    }
+    $s('p1-mode-reason', ctx.reason || '');
+
+    // Update calc button state
+    p1OnConditionChange();
+
+    // Sync mode to header (but don't override if user already set manually)
+    if (!currentMode) setMode(ctx.mode);
+
+  } catch(e) {
+    console.warn('p1LoadModeContext error:', e.message);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  WATCHLIST
+// ══════════════════════════════════════════════════════════════════
+function p1LoadWatchlist() {
+  try {
+    const raw = localStorage.getItem(P1_LS_KEY_WL);
+    p1Watchlist = raw ? JSON.parse(raw) : [];
+    if (!Array.isArray(p1Watchlist)) p1Watchlist = [];
+  } catch(e) {
+    p1Watchlist = [];
+  }
+}
+
+function p1SaveWatchlist() {
+  try { localStorage.setItem(P1_LS_KEY_WL, JSON.stringify(p1Watchlist)); } catch(e) {}
+}
+
+function p1AddToWatchlist() {
+  try {
+    const input = $('p1-wl-input');
+    const errEl = $('p1-wl-error');
+    const raw   = input ? input.value.trim() : '';
+
+    if (!raw) {
+      if (errEl) errEl.textContent = '請輸入股票名稱或代號';
+      return;
+    }
+    // Normalise: uppercase for stock codes
+    const name = raw;
+
+    // Duplicate check (case-insensitive)
+    const exists = p1Watchlist.some(s => s.toLowerCase() === name.toLowerCase());
+    if (exists) {
+      if (errEl) errEl.textContent = `「${name}」已在候選名單中`;
+      return;
+    }
+
+    p1Watchlist.push(name);
+    p1SaveWatchlist();
+    if (input) input.value = '';
+    if (errEl) errEl.textContent = '';
+    p1RenderWatchlist();
+    p1SyncSymbolPlanned();
+    p1UpdateSummary();
+  } catch(e) {
+    console.warn('p1AddToWatchlist error:', e.message);
+  }
+}
+
+function p1RemoveFromWatchlist(name) {
+  try {
+    p1Watchlist = p1Watchlist.filter(s => s !== name);
+    p1SaveWatchlist();
+    p1RenderWatchlist();
+    p1SyncSymbolPlanned();
+    p1UpdateSummary();
+  } catch(e) {}
+}
+
+function p1IsInWatchlist(symbolVal) {
+  if (!symbolVal) return false;
+  const s = symbolVal.toLowerCase().trim();
+  return p1Watchlist.some(w => {
+    const wl = w.toLowerCase();
+    // match if the symbol input contains the watchlist item or vice versa
+    return wl === s || s.includes(wl) || wl.includes(s);
+  });
+}
+
+function p1RenderWatchlist() {
+  try {
+    const list  = $('p1-watchlist-list');
+    const count = $('p1-wl-count');
+    const cnt2  = $('p1-wl-count-badge');
+    const badge = $('p1-wl-badge');
+    const n = p1Watchlist.length;
+
+    if (count) count.textContent = n;
+    if (cnt2)  cnt2.textContent  = n + ' 檔';
+    if (badge) badge.textContent = '候選：' + n + ' 檔';
+
+    if (!list) return;
+    if (n === 0) {
+      list.innerHTML = '<div class="p1-watchlist-empty">尚未加入任何候選股</div>';
+      return;
+    }
+
+    const currentSymbol = $v('symbol');
+    list.innerHTML = p1Watchlist.map(name => {
+      const isActive = p1IsInWatchlist(currentSymbol) &&
+                       (name.toLowerCase() === currentSymbol.toLowerCase() ||
+                        currentSymbol.toLowerCase().includes(name.toLowerCase()) ||
+                        name.toLowerCase().includes(currentSymbol.toLowerCase()));
+      return `<div class="p1-watchlist-item ${isActive ? 'p1-wl-active' : ''}">
+        ${isActive ? '<span class="p1-wl-badge">分析中</span>' : ''}
+        <span class="p1-wl-name">${escHtml(name)}</span>
+        <button class="p1-wl-del" onclick="p1RemoveFromWatchlist(${JSON.stringify(name)})"
+                title="移除">×</button>
+      </div>`;
+    }).join('');
+  } catch(e) {}
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  SYNC is_planned based on watchlist + symbol
+// ══════════════════════════════════════════════════════════════════
+function p1SyncSymbolPlanned() {
+  try {
+    const symbolVal = $v('symbol');
+    const plannedEl = $('is_planned');
+    if (!plannedEl) return;
+
+    const inList = p1IsInWatchlist(symbolVal);
+    plannedEl.value = inList ? 'true' : 'false';
+
+    // Trigger saveState to persist the change
+    try { saveState(); } catch(e) {}
+
+    // Update P1 summary
+    p1UpdateSummary();
+
+    // Re-render watchlist to reflect active state
+    p1RenderWatchlist();
+  } catch(e) {}
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  SYSTEM SUMMARY UPDATE
+// ══════════════════════════════════════════════════════════════════
+function p1UpdateSummary() {
+  try {
+    // Mode
+    const mode = currentMode || '';
+    const modeEl = $('p1-sum-mode');
+    const modeBadgeEl = $('p1-mode-badge');
+    if (modeEl) {
+      if (mode === 'A') { modeEl.textContent = 'A 進攻'; modeEl.className = 'p1-summary-value sv-a'; }
+      else if (mode === 'B') { modeEl.textContent = 'B 防守'; modeEl.className = 'p1-summary-value sv-b'; }
+      else { modeEl.textContent = '未定'; modeEl.className = 'p1-summary-value sv-none'; }
+    }
+    if (modeBadgeEl) {
+      modeBadgeEl.textContent = mode ? '模式：' + mode : '模式：未定';
+    }
+
+    // Source
+    const sourceEl = $('p1-sum-source');
+    if (sourceEl) {
+      if (p1ModeResult) {
+        sourceEl.textContent = 'system（P1 計算）';
+        sourceEl.className = 'p1-summary-value sv-b';
+      } else if (mode) {
+        sourceEl.textContent = 'manual（手動設定）';
+        sourceEl.className = 'p1-summary-value sv-a';
+      } else {
+        sourceEl.textContent = '尚未設定';
+        sourceEl.className = 'p1-summary-value sv-none';
+      }
+    }
+
+    // Template
+    const tmplEl = $('p1-sum-template');
+    if (tmplEl) {
+      const tmap = { A:'A 短線', B:'B 波段', C:'C 趨勢' };
+      tmplEl.textContent = tmap[currentTemplate] || currentTemplate || '—';
+    }
+
+    // Planned
+    const plannedVal = $v('is_planned');
+    const plannedEl2 = $('p1-sum-planned');
+    if (plannedEl2) {
+      const yes = plannedVal !== 'false';
+      plannedEl2.textContent = yes ? '✓ 是' : '✗ 否';
+      plannedEl2.className = 'p1-summary-value ' + (yes ? 'sv-yes' : 'sv-no');
+    }
+  } catch(e) {}
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  PATCH: hook into existing setMode / setTemplate / symbol change
+// ══════════════════════════════════════════════════════════════════
+(function patchP1Hooks() {
+  // Patch setMode to also update P1 summary
+  const _setMode = window.setMode;
+  window.setMode = function(m) {
+    try { _setMode(m); } catch(e) {}
+    try { p1UpdateSummary(); } catch(e) {}
+  };
+
+  // Patch setTemplate to also update P1 summary
+  const _setTemplate = window.setTemplate;
+  window.setTemplate = function(t) {
+    try { _setTemplate(t); } catch(e) {}
+    try { p1UpdateSummary(); } catch(e) {}
+  };
+
+  // Watch symbol input for watchlist matching
+  document.addEventListener('DOMContentLoaded', function() {
+    const symEl = document.getElementById('symbol');
+    if (symEl) {
+      symEl.addEventListener('input', function() {
+        try { p1SyncSymbolPlanned(); } catch(e) {}
+      });
+    }
+  });
+})();
+
+// ══════════════════════════════════════════════════════════════════
+//  BOOT
+// ══════════════════════════════════════════════════════════════════
+// Run after existing loadState() has already restored mode/template
+try { p1Init(); } catch(e) { console.warn('p1Init boot error:', e.message); }
+// Second pass after DOM/state is stable
+setTimeout(function() {
+  try { p1UpdateSummary(); p1SyncSymbolPlanned(); } catch(e) {}
+}, 50);
 
 </script>
 
