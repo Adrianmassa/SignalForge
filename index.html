@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 
-<html lang="zh-TW">
+<html lang="zh-TW" style="color-scheme:dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0a0c0f">
 <title>交易分析系統 v1.2</title>
 <style>
   :root {
@@ -558,6 +560,43 @@ font-weight: 800;
 grid-template-columns: 1fr;
 height: auto;
 }
+background-color: #0a0c0f !important;
+color: #f0f4f8 !important;
+color-scheme: dark;
+}
+/* Kill iOS Safari’s auto-styling on inputs/selects */
+input, select, textarea, button {
+-webkit-appearance: none;
+-moz-appearance: none;
+appearance: none;
+color-scheme: dark;
+}
+/* Force select dark on all browsers */
+select {
+background-image: url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘12’ height=‘8’ viewBox=‘0 0 12 8’%3E%3Cpath fill=’%236e7e90’ d=‘M6 8L0 0h12z’/%3E%3C/svg%3E”);
+background-repeat: no-repeat;
+background-position: right 10px center;
+padding-right: 30px !important;
+}
+/* Prevent any prefers-color-scheme: light override */
+@media (prefers-color-scheme: light) {
+html, body { background-color: #0a0c0f !important; color: #f0f4f8 !important; }
+.input-panel, .output-panel, .header { background-color: #111418 !important; }
+.input-cell { background: #111418 !important; }
+.input-cell input, .input-cell select { background: #1a1f26 !important; color: #f0f4f8 !important; border-color: #3a4150 !important; }
+.chip-cell { background: #111418 !important; }
+.chip-cell input { background: #1a1f26 !important; color: #f0f4f8 !important; }
+.section-hdr { background: #1a1f26 !important; color: #b8c4d0 !important; }
+.template-row { background: #111418 !important; }
+.tmpl-btn { background: #1a1f26 !important; color: #b8c4d0 !important; border-color: #3a4150 !important; }
+.analyse-wrap { background: #111418 !important; }
+.decision-box { background: #111418 !important; }
+.tag-card { background: #1a1f26 !important; }
+.score-card { background: #111418 !important; }
+.sugg-card { background: #111418 !important; }
+.risk-item { background: #1a1f26 !important; }
+.out-section { background: #0a0c0f !important; }
+}
 .input-panel { height: auto; overflow: visible; border-right: none; border-bottom: 2px solid var(–border2); }
 .output-panel { height: auto; }
 .tags-grid { grid-template-columns: repeat(2, 1fr); }
@@ -565,6 +604,37 @@ height: auto;
 .risk-row { grid-template-columns: repeat(4, 1fr); }
 .header-title { font-size: 15px; }
 .decision-action { font-size: 40px; }
+}
+/* ── iOS Safari & browser forced-color fixes ── */
+html, body {
+background-color: #0a0c0f !important;
+color: #f0f4f8 !important;
+color-scheme: dark;
+}
+input, select, textarea, button {
+-webkit-appearance: none;
+-moz-appearance: none;
+appearance: none;
+color-scheme: dark;
+}
+select {
+background-image: url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘12’ height=‘8’ viewBox=‘0 0 12 8’%3E%3Cpath fill=’%236e7e90’ d=‘M6 8L0 0h12z’/%3E%3C/svg%3E”);
+background-repeat: no-repeat;
+background-position: right 10px center;
+padding-right: 30px !important;
+}
+@media (prefers-color-scheme: light) {
+html, body { background-color: #0a0c0f !important; color: #f0f4f8 !important; }
+.input-panel, .output-panel { background-color: #111418 !important; }
+.header { background-color: #111418 !important; }
+.input-cell { background: #111418 !important; }
+.input-cell input, .input-cell select { background: #1a1f26 !important; color: #f0f4f8 !important; border-color: #3a4150 !important; }
+.chip-cell { background: #111418 !important; }
+.chip-cell input { background: #1a1f26 !important; color: #f0f4f8 !important; }
+.section-hdr { background: #1a1f26 !important; color: #b8c4d0 !important; }
+.template-row, .analyse-wrap { background: #111418 !important; }
+.tmpl-btn { background: #1a1f26 !important; color: #b8c4d0 !important; border-color: #3a4150 !important; }
+.decision-box, .tag-card, .score-card, .sugg-card, .risk-item { background: #111418 !important; }
 }
 </style>
 
