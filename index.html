@@ -833,20 +833,27 @@ function genTags(d, P) {
   var sh1 = d.sh1, sh2 = d.sh2, sl1 = d.sl1, sl2 = d.sl2;
   var bar_close = d.bar_close, prev_close = d.prev_close;
   var rsi_5 = d.rsi_5, rsi_5_prev = d.rsi_5_prev;
+  var ma5 = d.ma5, ma10 = d.ma10, ma20 = d.ma20;
 
   if (sl1 !== null && sl2 !== null && sh1 !== null && sh2 !== null && bar_close !== null) {
-    if (sl1 < sl2 && sh1 < sh2) {
+    var hhlPrimary = sh1 < sh2 && sl1 < sl2;
+    var belowSl1   = bar_close < sl1;
+    var inBuffer   = bar_close >= sl1 * 0.97 && bar_close <= sl1 * 1.03;
+    var rsiWeak    = rsi_5 !== null && rsi_5 < 45;
+    var maWeak     = ma5 !== null && ma10 !== null && ma5 <= ma10;
+    var rsiFalling = rsi_5 !== null && rsi_5_prev !== null && rsi_5 < rsi_5_prev;
+    var rsiRising  = rsi_5 !== null && rsi_5_prev !== null && rsi_5 >= rsi_5_prev;
+    var closeUp    = prev_close !== null && bar_close >= prev_close;
+    if (hhlPrimary && belowSl1 && rsiWeak && maWeak) {
       tags.price_structure = '下跌段';
-    } else if (bar_close < sl1) {
+    } else if (belowSl1) {
       tags.price_structure = '結構破壞';
-    } else if (bar_close >= sl1*0.97 && bar_close <= sl1*1.03 && rsi_5 !== null && rsi_5_prev !== null && rsi_5 < rsi_5_prev) {
+    } else if (inBuffer && rsiFalling) {
       tags.price_structure = '回測中';
-    } else if (bar_close >= sl1*0.97 && bar_close <= sl1*1.03 && rsi_5 !== null && rsi_5_prev !== null && rsi_5 >= rsi_5_prev && prev_close !== null && bar_close >= prev_close) {
+    } else if (inBuffer && rsiRising && closeUp) {
       tags.price_structure = '回測完成';
-    } else if (sh1 > sh2 && sl1 > sl2 && bar_close > sl1*1.03) {
+    } else if (sh1 > sh2 && sl1 > sl2 && bar_close > sl1 * 1.03) {
       tags.price_structure = '主升段';
-    } else if ((sh1 <= sh2 && sl1 >= sl2) || (Math.abs(sh1-sh2) < sh2*0.02 && Math.abs(sl1-sl2) < sl2*0.02)) {
-      tags.price_structure = '整理末段';
     } else {
       tags.price_structure = '整理末段';
     }
@@ -854,7 +861,6 @@ function genTags(d, P) {
     tags.price_structure = '整理末段';
   }
 
-  var ma5 = d.ma5, ma10 = d.ma10, ma20 = d.ma20;
   if (ma5 !== null && ma10 !== null && ma20 !== null) {
     if (ma5 > ma10 && ma10 > ma20) tags.ma_alignment = '多頭排列';
     else if (ma5 < ma10 && ma10 < ma20) tags.ma_alignment = '空頭排列';
@@ -899,6 +905,12 @@ function genTags(d, P) {
     else if (rsi_5 > P.rsi_os) tags.rsi_zone = '弱勢區';
     else tags.rsi_zone = '超賣';
   } else { tags.rsi_zone = '中性區'; }
+
+  tags.structure_conflict = false;
+  if (tags.price_structure === '下跌段') {
+    if (tags.ma_alignment === '多頭排列') tags.structure_conflict = true;
+    if (tags.momentum === '緩漲' || tags.momentum === '動能加速') tags.structure_conflict = true;
+  }
 
   return tags;
 }
@@ -956,6 +968,7 @@ function riskGating(scores, hasPos) {
 function tradeRule(tags, scores, d, P, mode) {
   var sc = scores.score_composite, sr = scores.score_risk;
   var ps = tags.price_structure, mo = tags.momentum;
+  var conflict = tags.structure_conflict === true;
   var pos = d.position_pct || 0;
   var hasPos = pos > 0;
   var maxSingle = P.max_single;
@@ -965,6 +978,12 @@ function tradeRule(tags, scores, d, P, mode) {
   if (!is_planned && !hasPos) {
     return {action:'不進場', reason:'NO_ENTRY_SCORE', l4_code:'NO_ENTRY_SCORE', detail:'R8：非計畫內交易，禁止下單', posState:posState};
   }
+
+  if (conflict) {
+    if (hasPos) return {action:'續抱', reason:'CONFLICT_HOLD', l4_code:'CONFLICT_HOLD', detail:'結構訊號與均線/動能不一致，降級為續抱觀察', posState:posState};
+    return {action:'觀察', reason:'CONFLICT_OBSERVE', l4_code:'CONFLICT_OBSERVE', detail:'結構訊號與均線/動能不一致，降級為觀察', posState:posState};
+  }
+
   if (ps === '結構破壞') {
     if (hasPos) return {action:'出場', reason:'EXIT_STRUCT', l4_code:'EXIT_STRUCT', detail:'結構破壞，L5執行R4b/R4c', posState:posState};
     return {action:'不進場', reason:'NO_ENTRY_SCORE', l4_code:'NO_ENTRY_SCORE', detail:'結構破壞，不建新倉', posState:posState};
@@ -973,8 +992,10 @@ function tradeRule(tags, scores, d, P, mode) {
     if (hasPos) return {action:'出場', reason:'EXIT_TREND', l4_code:'EXIT_TREND', detail:'下跌段確認，L5執行R4d', posState:posState};
     return {action:'不進場', reason:'NO_ENTRY_SCORE', l4_code:'NO_ENTRY_SCORE', detail:'下跌段，不做多', posState:posState};
   }
+
   var gated = riskGating(scores, hasPos);
   if (gated && !hasPos) return Object.assign({}, gated, {l4_code:gated.reason, posState:posState});
+
   if (sc < P.entry_min) {
     if (hasPos) {
       if (mo === '翻空' || mo === '動能衰退') return {action:'減碼', reason:'REDUCE_WEAK', l4_code:'REDUCE_WEAK', detail:'評分低且動能衰退，先行減碼', posState:posState};
@@ -1017,6 +1038,7 @@ function riskControl(proposed, d, P, scores) {
   var daily = d.daily_change_pct || 0;
   var vol_ratio = d.volume_ratio || 0;
   var is_planned = VS('is_planned') !== 'false';
+  var conflict = d._tags_conflict === true;
 
   if (!is_planned) triggered.push({rule:'R8', type:'no_entry', action:'不進場', detail:'非計畫內交易，禁止下單'});
   if (hasPos && pos >= P.max_single) triggered.push({rule:'R5', type:'block_add', action:'續抱', detail:'持股'+pos+'%達上限'+P.max_single+'%'});
@@ -1025,7 +1047,7 @@ function riskControl(proposed, d, P, scores) {
   }
   if (hasPos) {
     if (proposed.l4_code === 'EXIT_TREND') {
-      triggered.push({rule:'R4d', type:'clear', action:'出場', detail:'下跌段確認，R4d全清'});
+      if (!conflict) triggered.push({rule:'R4d', type:'clear', action:'出場', detail:'下跌段確認，R4d全清'});
     } else if (proposed.l4_code === 'EXIT_STRUCT') {
       var sl_price = d.sl1 ? d.sl1 * (1 + P.sl_offset/100) : null;
       if (sl_price && d.bar_close && d.bar_close <= sl_price) {
@@ -1105,6 +1127,7 @@ function runAnalysis() {
   var tags = genTags(d, P);
   var scores = computeScores(tags, P);
   var proposed = tradeRule(tags, scores, d, P, mode);
+  d._tags_conflict = tags.structure_conflict === true;
   var risk = riskControl(proposed, d, P, scores);
   var sl = suggestStopLoss(d, tags, P);
 
@@ -1133,8 +1156,13 @@ function renderOutput(tags, scores, proposed, risk, sl, d, P, mode) {
   meta.innerHTML = '<span>'+symbol+'</span> &nbsp;|&nbsp; 模式 <span>'+(mode||'未定')+'</span> &nbsp;|&nbsp; 模板 <span>'+currentTemplate+' '+tmplName+'</span><br>綜合分 <span>'+scores.score_composite+'</span> &nbsp;/&nbsp; 風險分 <span>'+scores.score_risk+'</span> &nbsp;|&nbsp; L4: <span>'+proposed.l4_code+'</span>';
 
   if (risk.override) {
-    ob.className = 'override-banner show';
-    ob.textContent = 'override ['+risk.override_rule+']: '+risk.override_detail;
+    var showOvr = !(risk.override_rule === 'R5' && fa !== '續抱');
+    if (showOvr) {
+      ob.className = 'override-banner show';
+      ob.textContent = 'override ['+risk.override_rule+']: '+risk.override_detail;
+    } else {
+      ob.className = 'override-banner';
+    }
   } else {
     ob.className = 'override-banner';
   }
@@ -1147,6 +1175,20 @@ function renderOutput(tags, scores, proposed, risk, sl, d, P, mode) {
     var on = !!triggeredRules[r];
     return '<div class="risk-item'+(on?' triggered':'')+'"><div class="risk-dot'+(on?' on-r':'')+'"></div><span class="risk-label">'+r+'</span></div>';
   }).join('');
+
+  var conflictBanner = document.getElementById('conflict-banner');
+  if (!conflictBanner) {
+    conflictBanner = document.createElement('div');
+    conflictBanner.id = 'conflict-banner';
+    conflictBanner.style.cssText = 'margin:6px 12px;padding:8px 12px;background:#1a1200;border:1px solid #ffca28;border-radius:5px;font-size:11px;color:#ffca28;display:none';
+    riskRow.parentNode.insertBefore(conflictBanner, riskRow.nextSibling);
+  }
+  if (tags.structure_conflict) {
+    conflictBanner.style.display = 'block';
+    conflictBanner.textContent = 'CONFLICT: 價格結構與均線/動能不一致，已降級，不採用趨勢出場判定';
+  } else {
+    conflictBanner.style.display = 'none';
+  }
 
   var sc = scores.score_composite;
   var barFill = document.getElementById('composite-bar');
@@ -1298,6 +1340,7 @@ function showP3Section(tags, scores, proposed, risk, d, P, mode) {
       sl1:              d.sl1,
       is_planned:       VS('is_planned') !== 'false',
       is_in_loss:       (d.profit_pct || 0) < 0,
+      structure_conflict: tags.structure_conflict === true,
       P:                P
     };
     var pos = p3InputSnapshot.position_pct;
@@ -1409,11 +1452,17 @@ function runP3L4(snap) {
   var posState = snap.current_position_state;
   var hasPos = posState !== '無倉';
   var P = snap.P;
+  var conflict = snap.structure_conflict === true;
 
   function out(action, code, summary, extra) {
     var o = {proposed_action:action, l4_reason_code:code, l4_reason_summary:summary};
     if (extra) Object.keys(extra).forEach(function(k) { o[k] = extra[k]; });
     return o;
+  }
+
+  if (conflict) {
+    if (hasPos) return out('續抱','CONFLICT_HOLD','結構訊號與均線/動能不一致，降級為續抱觀察');
+    return out('觀察','CONFLICT_OBSERVE','結構訊號與均線/動能不一致，降級為觀察');
   }
 
   if (sr >= 70) {
@@ -1479,7 +1528,7 @@ function runP3L5(l4, snap) {
     return mkClean(pa);
   }
 
-  if (snap.tag_price_structure === '下跌段') triggered.push({rule:'R4d', type:'clear', pct:null, detail:'下跌段確認，R4d全清'});
+  if (snap.tag_price_structure === '下跌段' && !snap.structure_conflict) triggered.push({rule:'R4d', type:'clear', pct:null, detail:'下跌段確認，R4d全清'});
   if (snap.tag_price_structure === '結構破壞' && snap.sl1 && snap.price_current) {
     var slPrice = snap.sl1 * (1 + P.sl_offset/100);
     if (snap.price_current <= slPrice) triggered.push({rule:'R4c', type:'clear', pct:null, detail:'跌破停損位'+slPrice.toFixed(1)+'，R4c全清'});
