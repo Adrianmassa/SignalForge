@@ -1403,12 +1403,8 @@ function loadState() {
 document.addEventListener('input', () => saveState());
 document.addEventListener('change', () => saveState());
 
-// Init
+// Init：恢復上次填入的資料，但不自動執行分析
 loadState();
-// If state was loaded, auto-run analysis
-if (localStorage.getItem('trading_state')) {
-  try { runAnalysis(); } catch(e) {}
-}
 </script>
 
 </body>
