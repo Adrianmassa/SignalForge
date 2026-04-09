@@ -1255,7 +1255,15 @@ function suggestStopLoss(d, tags, P) {
 //  TRADE: MAIN ANALYSIS
 // ════════════════════════════════════════════════════════════════
 function runAnalysis() {
-  try { saveFieldsForSymbol(VS('symbol'), 'trade'); } catch(e) {}
+  try {
+    var sym = VS('symbol');
+    if (sym && sym !== _prevTradeSymbol) {
+      saveFieldsForSymbol(_prevTradeSymbol, 'trade');
+      loadFieldsForSymbol(sym, 'trade');
+      _prevTradeSymbol = sym;
+    }
+    saveFieldsForSymbol(sym, 'trade');
+  } catch(e) {}
   var P = TEMPLATES[currentRhythm];
   var d = {
     price_current:V('price_current'), price_high_recent:V('price_high_recent'),
@@ -1396,7 +1404,15 @@ function renderTradeOutput(tags, scores, proposed, risk, sl, d, P) {
 //  INVEST MODE: ANALYSIS
 // ════════════════════════════════════════════════════════════════
 function runInvestAnalysis() {
-  try { saveFieldsForSymbol(VS('inv_symbol'), 'invest'); } catch(e) {}
+  try {
+    var sym = VS('inv_symbol');
+    if (sym && sym !== _prevInvestSymbol) {
+      saveFieldsForSymbol(_prevInvestSymbol, 'invest');
+      loadFieldsForSymbol(sym, 'invest');
+      _prevInvestSymbol = sym;
+    }
+    saveFieldsForSymbol(sym, 'invest');
+  } catch(e) {}
   var price   = V('inv_price');
   var high52  = V('inv_high52');
   var low52   = V('inv_low52');
@@ -1999,20 +2015,12 @@ function syncIsPlanned() {
   var invSym=(document.getElementById('inv_symbol')||{}).value||'';
   if(trEl) trEl.value=p1IsInWatchlist(trSym)?'true':'false';
   if(invEl) invEl.value=p1IsInWatchlist(invSym)?'true':'false';
-  // Per-symbol field save/load
-  try { onSymbolChange(trSym, 'trade'); } catch(e) {}
-  try { onSymbolChange(invSym, 'invest'); } catch(e) {}
   p1RenderWatchlist();
   saveState();
   try { loadChipModuleForSymbol(VS('symbol') || VS('inv_symbol')); } catch(e) {}
 }
-document.addEventListener('DOMContentLoaded',function(){
-  var s=document.getElementById('symbol');
-  var s2=document.getElementById('inv_symbol');
-  // Only trigger on blur — never interrupt iOS IME
-  if(s)  { s.addEventListener('blur',   function(){ syncIsPlanned(); }); }
-  if(s2) { s2.addEventListener('blur',  function(){ syncIsPlanned(); }); }
-});
+// Symbol fields have NO event listeners — iOS IME must not be interrupted
+// syncIsPlanned() is called by watchlist item clicks and analyse buttons
  
 function p1Init() {
   try{
