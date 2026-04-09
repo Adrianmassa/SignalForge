@@ -2906,83 +2906,147 @@ function buildChipSnapshotData(sym) {
  
 function buildChipSnapshotHtml(data) {
   try {
-    if (!data) return '<div style="font-size:10px;color:#3a4150;font-style:italic;padding:6px 0">\u7c4c\u78bc\u5feb\u7167\u672a\u8a18\u9304</div>';
+    if (!data) return '<div style="font-size:10px;color:#3a4150;font-style:italic;padding:6px 4px">\u7c4c\u78bc\u5feb\u7167\u672a\u5b8c\u6574\u8a18\u9304</div>';
  
+    // ── helpers (mirror main panel logic exactly) ──────────────────
     function fmt(v) {
       if (v === null || v === undefined) return '-';
       return (v > 0 ? '+' : '') + Number(v).toFixed(2);
     }
+    // numColor: same as chipNumClass on main panel
+    // main panel: >=8 semi-bull border #1f3a5f / text #4da6ff
+    //             <=-8 semi-bear border #7a4000 / text #ffa726
+    // For P4 inline style we use the same colour scale
     function numColor(v) {
       if (v === null || v === undefined) return '#b8c4d0';
-      return v >= 8 ? '#00e676' : v <= -8 ? '#ff5252' : '#b8c4d0';
+      if (v >= 8)  return '#4da6ff';
+      if (v <= -8) return '#ffa726';
+      return '#b8c4d0';
     }
+    // labelColor: mirrors chipLabelClass — 強多 bull(red TW), 偏多 semi-bull(blue),
+    //             強空 bear(green TW), 偏空 semi-bear(orange), 不明 grey
     function labelColor(label) {
-      if (label === '\u5f37\u591a') return '#ff5252';
-      if (label === '\u504f\u591a') return '#ffa726';
-      if (label === '\u5f37\u7a7a') return '#00e676';
-      if (label === '\u504f\u7a7a') return '#4da6ff';
-      return '#6e7e90';
+      if (label === '\u5f37\u591a') return '#ff5252';   // 強多 red
+      if (label === '\u504f\u591a') return '#4da6ff';   // 偏多 blue
+      if (label === '\u5f37\u7a7a') return '#00e676';   // 強空 green
+      if (label === '\u504f\u7a7a') return '#ffa726';   // 偏空 orange
+      return '#6e7e90';                                  // 不明 grey
     }
+    // trendColor: mirrors chip-ref-card bull/bear
     function trendColor(trend) {
-      if (trend === '\u6ce2\u6bb5\u504f\u591a') return '#ff5252';
-      if (trend === '\u6ce2\u6bb5\u504f\u7a7a') return '#00e676';
-      return '#ffca28';
+      if (trend === '\u6ce2\u6bb5\u504f\u591a') return '#00e676';  // 波段偏多 green
+      if (trend === '\u6ce2\u6bb5\u504f\u7a7a') return '#ff5252';  // 波段偏空 red
+      return '#ffca28';                                              // 震盪/不足 yellow
+    }
+    function trendBorder(trend) {
+      if (trend === '\u6ce2\u6bb5\u504f\u591a') return '#00c853';
+      if (trend === '\u6ce2\u6bb5\u504f\u7a7a') return '#8b0000';
+      return '#7a5000';
+    }
+    function numBorder(v) {
+      if (v === null || v === undefined) return '#1a2a30';
+      if (v >= 8)  return '#1f3a5f';
+      if (v <= -8) return '#7a4000';
+      return '#1a2a30';
     }
  
-    // 6-cell grid
     var sv = data.chip_strength_value || 0;
-    var barColor = sv >= 8 ? '#ff5252' : sv <= -8 ? '#00e676' : '#ffca28';
+    // barColor mirrors main panel: >=8 green, <=-8 red, else yellow
+    var barColor = sv >= 8 ? '#00e676' : sv <= -8 ? '#ff5252' : '#ffca28';
     var barPct = (sv + 100) / 2;
     var barLeft, barWidth;
     if (sv >= 0) { barLeft = 50; barWidth = barPct - 50; }
     else         { barLeft = barPct; barWidth = 50 - barPct; }
  
-    var gridHtml = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:8px">'
-      + '<div style="background:#0d1117;border:1px solid #1a2a30;border-radius:4px;padding:5px 7px"><div style="font-size:8px;color:#6e7e90">\u7576\u65e5\u504f\u5dee%</div><div style="font-size:12px;font-weight:800;color:'+numColor(data.chip_today_bias_pct)+'">'+fmt(data.chip_today_bias_pct)+'</div></div>'
-      + '<div style="background:#0d1117;border:1px solid #1a2a30;border-radius:4px;padding:5px 7px"><div style="font-size:8px;color:#6e7e90">\u7576\u65e5\u6a19\u8a3b</div><div style="font-size:12px;font-weight:800;color:'+labelColor(data.chip_today_label)+'">'+data.chip_today_label+'</div></div>'
-      + '<div style="background:#0d1117;border:1px solid #1a2a30;border-radius:4px;padding:5px 7px"><div style="font-size:8px;color:#6e7e90">\u6ce2\u6bb5\u8da8\u52e2</div><div style="font-size:12px;font-weight:800;color:'+trendColor(data.chip_trend_label)+'">'+data.chip_trend_label+'</div></div>'
-      + '<div style="background:#0d1117;border:1px solid #1a2a30;border-radius:4px;padding:5px 7px"><div style="font-size:8px;color:#6e7e90">\u91134\u65e5\u5747</div><div style="font-size:12px;font-weight:700;color:'+numColor(data.chip_avg_3)+'">'+fmt(data.chip_avg_3)+'</div></div>'
-      + '<div style="background:#0d1117;border:1px solid #1a2a30;border-radius:4px;padding:5px 7px"><div style="font-size:8px;color:#6e7e90">\u91135\u65e5\u5747</div><div style="font-size:12px;font-weight:700;color:'+numColor(data.chip_avg_5)+'">'+fmt(data.chip_avg_5)+'</div></div>'
-      + '<div style="background:#0d1117;border:1px solid #1a2a30;border-radius:4px;padding:5px 7px"><div style="font-size:8px;color:#6e7e90">\u911310\u65e5\u5747</div><div style="font-size:12px;font-weight:700;color:'+numColor(data.chip_avg_10)+'">'+fmt(data.chip_avg_10)+'</div></div>'
+    // ── Row 1: 當日偏差% / 當日標註 / 波段趨勢 ──────────────────
+    function card(borderCol, label, valHtml) {
+      return '<div style="background:#0d1117;border:1px solid '+borderCol+';border-radius:6px;padding:6px 8px">'
+        +'<div style="font-size:9px;font-weight:700;color:#6e7e90;text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px">'+label+'</div>'
+        +valHtml+'</div>';
+    }
+    function valSpan(color, text, size) {
+      return '<div style="font-size:'+(size||13)+'px;font-weight:800;color:'+color+'">'+text+'</div>';
+    }
+ 
+    var row1 = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:6px">'
+      + card(numBorder(data.chip_today_bias_pct), '\u7576\u65e5\u504f\u5dee%',
+          valSpan(numColor(data.chip_today_bias_pct), fmt(data.chip_today_bias_pct)+'%'))
+      + card('#1a2a30', '\u7576\u65e5\u6a19\u8a3b',
+          valSpan(labelColor(data.chip_today_label), data.chip_today_label))
+      + card(trendBorder(data.chip_trend_label), '\u6ce2\u6bb5\u8da8\u52e2',
+          valSpan(trendColor(data.chip_trend_label), data.chip_trend_label, 12))
       + '</div>';
  
-    // Strength bar
+    // ── Row 2: 近3 / 近5 / 近10 日均值 ─────────────────────────
+    var row2 = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:6px">'
+      + card(numBorder(data.chip_avg_3),  '\u91133\u65e5\u5747\u5024',
+          valSpan(numColor(data.chip_avg_3),  fmt(data.chip_avg_3)))
+      + card(numBorder(data.chip_avg_5),  '\u91135\u65e5\u5747\u5024',
+          valSpan(numColor(data.chip_avg_5),  fmt(data.chip_avg_5)))
+      + card(numBorder(data.chip_avg_10), '\u911310\u65e5\u5747\u5024',
+          valSpan(numColor(data.chip_avg_10), fmt(data.chip_avg_10)))
+      + '</div>';
+ 
+    // ── Strength bar (10px tall, mirrors chip-strength-track) ────
     var barHtml = '<div style="margin-bottom:8px">'
-      + '<div style="display:flex;justify-content:space-between;font-size:9px;color:#6e7e90;margin-bottom:3px"><span>\u504f\u7a7a -100</span><span>\u591a\u7a7a\u5f37\u5ea6: <strong style="color:'+barColor+'">'+sv+'</strong></span><span>\u504f\u591a +100</span></div>'
-      + '<div style="position:relative;height:8px;background:#1a1f26;border-radius:4px;overflow:hidden">'
-      + '<div style="position:absolute;top:0;bottom:0;left:'+barLeft+'%;width:'+barWidth+'%;background:'+barColor+'"></div>'
-      + '<div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:#3a4150"></div>'
+      + '<div style="display:flex;justify-content:space-between;font-size:10px;color:#6e7e90;font-weight:600;margin-bottom:5px">'
+      + '<span>\u504f\u7a7a -100</span>'
+      + '<span>\u591a\u7a7a\u5f37\u5ea6: <strong style="color:'+barColor+'">'+sv+'</strong></span>'
+      + '<span>\u504f\u591a +100</span></div>'
+      + '<div style="position:relative;height:10px;background:#252b34;border-radius:5px;overflow:hidden">'
+      + '<div style="position:absolute;top:0;bottom:0;left:'+barLeft+'%;width:'+barWidth+'%;background:'+barColor+';border-radius:5px"></div>'
+      + '<div style="position:absolute;left:50%;top:0;bottom:0;width:2px;background:#3a4150;opacity:.8"></div>'
       + '</div></div>';
  
-    // Static sparkline
+    // ── Sparkline (mirrors .chip-spark-bars mid-axis layout) ─────
     var sparkValues = data.chip_sparkline_values || [];
     var sparkHtml = '';
     if (sparkValues.length > 0) {
       var maxAbs = Math.max.apply(null, sparkValues.map(function(v){return Math.abs(v||0);}));
       if (maxAbs === 0) maxAbs = 1;
-      sparkHtml = '<div style="margin-bottom:4px"><div style="font-size:8px;color:#6e7e90;margin-bottom:3px">SPARKLINE (\u8fd1'+sparkValues.length+'\u65e5)</div>'
-        + '<div style="display:flex;align-items:stretch;gap:2px;height:40px;position:relative">'
-        + '<div style="position:absolute;left:0;right:0;top:50%;height:1px;background:#3a4150"></div>'
-        + sparkValues.map(function(v){
-          var h = v === 0 ? 2 : Math.max(3, Math.round(Math.abs(v||0) / maxAbs * 18));
-          var col = v > 0 ? '#ff5252' : v < 0 ? '#00e676' : '#3a4150';
-          if (v > 0) {
-            return '<div style="flex:1;display:grid;grid-template-rows:1fr 1fr;height:100%">'
-              +'<div style="display:flex;align-items:flex-end"><div style="width:100%;height:'+h+'px;background:'+col+';border-radius:1px 1px 0 0"></div></div>'
-              +'<div></div></div>';
-          } else if (v < 0) {
-            return '<div style="flex:1;display:grid;grid-template-rows:1fr 1fr;height:100%">'
-              +'<div></div>'
-              +'<div style="display:flex;align-items:flex-start"><div style="width:100%;height:'+h+'px;background:'+col+';border-radius:0 0 1px 1px"></div></div></div>';
-          } else {
-            return '<div style="flex:1;display:flex;align-items:center;justify-content:center"><div style="width:100%;height:2px;background:#3a4150"></div></div>';
-          }
-        }).join('')
+      var bars = sparkValues.map(function(v){
+        var h = (v === 0) ? 2 : Math.max(3, Math.round(Math.abs(v||0) / maxAbs * 22));
+        // TW convention: pos=red, neg=green (mirrors .chip-spark-bar.pos/.neg)
+        var col = v > 0 ? '#ff5252' : v < 0 ? '#00e676' : '#3a4150';
+        if (v > 0) {
+          return '<div style="flex:1;display:grid;grid-template-rows:1fr 1fr;height:100%">'
+            +'<div style="display:flex;align-items:flex-end"><div style="width:100%;height:'+h+'px;background:'+col+';border-radius:1px 1px 0 0"></div></div>'
+            +'<div></div></div>';
+        } else if (v < 0) {
+          return '<div style="flex:1;display:grid;grid-template-rows:1fr 1fr;height:100%">'
+            +'<div></div>'
+            +'<div style="display:flex;align-items:flex-start"><div style="width:100%;height:'+h+'px;background:'+col+';border-radius:0 0 1px 1px"></div></div></div>';
+        } else {
+          return '<div style="flex:1;display:flex;align-items:center;justify-content:center">'
+            +'<div style="width:100%;height:2px;background:#3a4150"></div></div>';
+        }
+      }).join('');
+      sparkHtml = '<div>'
+        + '<div style="font-size:9px;font-weight:700;color:#6e7e90;text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px">'
+        + '\u91135'+sparkValues.length+'\u65e5\u504f\u5dee\u5024 SPARKLINE</div>'
+        + '<div style="display:flex;align-items:stretch;gap:2px;height:48px;position:relative">'
+        + '<div style="position:absolute;left:0;right:0;top:50%;height:1px;background:#3a4150;z-index:1"></div>'
+        + bars
         + '</div></div>';
     }
  
-    return gridHtml + barHtml + sparkHtml;
-  } catch(e) { return '<div style="font-size:10px;color:#ff5252">\u7c4c\u78bc\u5feb\u7167\u932f\u8aa4: '+String(e.message)+'</div>'; }
+    // ── Header ──────────────────────────────────────────────────
+    var ts = data.chip_last_updated_at ? (function(){
+      try {
+        var d = new Date(data.chip_last_updated_at);
+        return String(d.getMonth()+1).padStart(2,'0')+'/'+String(d.getDate()).padStart(2,'0')
+          +' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+      } catch(e2){ return ''; }
+    })() : '';
+    var headerHtml = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #004455">'
+      + '<span style="font-size:10px;font-weight:700;color:#00b8d9">\u7c4c\u78bc\u504f\u5411\u5feb\u7167</span>'
+      + '<span style="font-size:9px;color:#3a4150">\u6b77\u53f2\u5feb\u7167'+(ts?' \u00b7 '+ts:'')+'</span>'
+      + '</div>';
+ 
+    return headerHtml + row1 + row2 + barHtml + sparkHtml;
+  } catch(e) {
+    return '<div style="font-size:10px;color:#ff5252">\u7c4c\u78bc\u5feb\u7167\u932f\u8aa4: '+String(e.message)+'</div>';
+  }
 }
  
 </script>
