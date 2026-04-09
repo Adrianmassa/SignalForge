@@ -1831,10 +1831,12 @@ function loadState() {
     if(st.mainMode) setMainMode(st.mainMode);
   } catch(e){}
 }
-var _globalComposing = false;
-document.addEventListener('compositionstart', function(){ _globalComposing = true; });
-document.addEventListener('compositionend',   function(){ _globalComposing = false; saveState(); });
-document.addEventListener('input',  function(){ if (!_globalComposing) saveState(); });
+document.addEventListener('input',  function(e){
+  // Skip symbol fields — handled on blur to avoid breaking iOS IME
+  var id = e.target && e.target.id;
+  if (id === 'symbol' || id === 'inv_symbol') return;
+  saveState();
+});
 document.addEventListener('change', function(){ saveState(); });
 loadState();
  
@@ -2007,20 +2009,9 @@ function syncIsPlanned() {
 document.addEventListener('DOMContentLoaded',function(){
   var s=document.getElementById('symbol');
   var s2=document.getElementById('inv_symbol');
- 
-  // Use compositionend (after IME finishes) + blur + change
-  // to avoid interfering with zhuyin/pinyin mid-composition
-  function bindSymbolEvents(el) {
-    if (!el) return;
-    var composing = false;
-    el.addEventListener('compositionstart', function(){ composing = true; });
-    el.addEventListener('compositionend',   function(){ composing = false; syncIsPlanned(); });
-    el.addEventListener('input',  function(){ if (!composing) syncIsPlanned(); });
-    el.addEventListener('blur',   function(){ syncIsPlanned(); });
-    el.addEventListener('change', function(){ syncIsPlanned(); });
-  }
-  bindSymbolEvents(s);
-  bindSymbolEvents(s2);
+  // Only trigger on blur — never interrupt iOS IME
+  if(s)  { s.addEventListener('blur',   function(){ syncIsPlanned(); }); }
+  if(s2) { s2.addEventListener('blur',  function(){ syncIsPlanned(); }); }
 });
  
 function p1Init() {
