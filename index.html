@@ -431,6 +431,14 @@ body {
 .draft-banner { font-size: 10px; color: #00b8d9; font-weight: 600; padding: 4px 14px; background-color: #001a22; border-bottom: 1px solid #004455; display: none; }
 .draft-banner.show { display: block; }
  
+ 
+/* P4 collapsible snapshot blocks */
+.p4-snap-toggle { width:100%; padding:6px 10px; background:#0d1a2e; border:none; border-top:1px solid #1f3a5f; color:#4da6ff; font-family:inherit; font-size:10px; font-weight:700; text-align:left; cursor:pointer; display:flex; align-items:center; gap:6px; -webkit-appearance:none; }
+.p4-snap-toggle.p3 { background:#0d1117; border-color:#252b34; color:#ce93d8; }
+.p4-snap-toggle-icon { margin-left:auto; font-size:10px; transition:transform .2s; }
+.p4-snap-toggle-icon.open { transform:rotate(180deg); }
+.p4-snap-content { display:none; padding:8px 10px; background:#070a0d; border-top:1px solid #1a1f26; overflow-x:auto; }
+.p4-snap-content.open { display:block; }
 /* ── P4 PANEL ── */
 #p4-journal { background-color: #0a0c0f; border-top: 3px solid #252b34; }
 .p4-header { background-color: #111418; border-bottom: 2px solid #252b34; padding: 10px 16px; display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
@@ -1764,7 +1772,7 @@ function runP3Decision() {
     if (!p3L5Result) throw new Error('L5 返回空值');
     if (VALID_TRADE_ACTIONS.indexOf(p3L5Result.final_action)<0) throw new Error('L5 final_action 非法: '+p3L5Result.final_action);
     renderP3Results(p3L4Result,p3L5Result,p3InputSnapshot);
-    // Attach P3 results to snapshot before writing to P4
+    // Attach P3 results + HTML snapshot before writing to P4
     try {
       if (_lastAnalysisSnapshot) {
         _lastAnalysisSnapshot.p3 = {
@@ -1772,6 +1780,7 @@ function runP3Decision() {
           l5: p3L5Result,
           final_action: p3L5Result.final_action
         };
+        _lastAnalysisSnapshot.p3_snapshot_html = buildP3SnapshotHtml(p3InputSnapshot, p3L4Result, p3L5Result);
       }
     } catch(e) {}
     try {p4AddEntry(p3InputSnapshot,p3L4Result,p3L5Result);} catch(e){}
@@ -1947,7 +1956,7 @@ function p1RenderWatchlist() {
     var isActive=p1IsInWatchlist(curSym)&&(name.toLowerCase()===curSym.toLowerCase()||curSym.toLowerCase().indexOf(name.toLowerCase())>=0||name.toLowerCase().indexOf(curSym.toLowerCase())>=0);
     html+='<div class="p1-watchlist-item '+(isActive?'p1-wl-active':'')+'">';
     if(isActive) html+='<span class="p1-wl-badge">\u5206\u6790\u4e2d</span>';
-    html+='<span class="p1-wl-name">'+p1EscHtml(name)+'</span>';
+    html+='<span class="p1-wl-name" style="cursor:pointer" onclick="p1SelectSymbol(\''+p1EscHtml(name)+'\')" title="切換到此股票">'+p1EscHtml(name)+'</span>';
     html+='<button class="p1-wl-del" data-idx="'+i+'" onclick="p1RemoveByIndex(this)">\xd7</button>';
     html+='</div>';
   }
@@ -1970,13 +1979,33 @@ document.addEventListener('DOMContentLoaded',function(){
   var s2=document.getElementById('inv_symbol');
   if(s) {
     s.addEventListener('change', function(){
+      var newSym = s.value.trim();
+      // Save current symbol's workspace, load new symbol's workspace
+      try { switchSymbolWorkspace(newSym); } catch(e) {}
+      // Sync planned status and watchlist highlight
       syncIsPlanned();
-      // Load today's draft for this symbol (read-only, no DOM side effects during typing)
-      try { loadDraftForSymbol(s.value.trim()); } catch(e) {}
     });
   }
   if(s2) s2.addEventListener('change',function(){syncIsPlanned();});
+  // Init _currentWorkspaceSym from whatever is loaded in field
+  try {
+    var initSym = (document.getElementById('symbol')||{}).value||'';
+    _currentWorkspaceSym = initSym.trim();
+  } catch(e) {}
 });
+ 
+// Select a symbol from watchlist — triggers workspace switch
+function p1SelectSymbol(sym) {
+  try {
+    var el = document.getElementById('symbol');
+    if (!el || !sym) return;
+    var newSym = sym.trim();
+    if (el.value.trim() === newSym) return; // already selected
+    try { switchSymbolWorkspace(newSym); } catch(e2) {}
+    el.value = newSym;
+    syncIsPlanned();
+  } catch(e) { console.warn('p1SelectSymbol error:', e.message); }
+}
  
 function p1Init() {
   try{
@@ -1984,6 +2013,11 @@ function p1Init() {
     p1LoadOpenState();
     p1RenderWatchlist();
     syncIsPlanned();
+    // Init workspace tracker
+    try {
+      var initSym = (document.getElementById('symbol')||{}).value||'';
+      _currentWorkspaceSym = initSym.trim();
+    } catch(e2) {}
   }catch(e){console.warn('p1Init error:',e.message);}
 }
 try{p1Init();}catch(e){console.warn('p1Init boot error:',e.message);}
@@ -2522,6 +2556,8 @@ function bindChipModuleEvents() {
 //  DRAFT BY SYMBOL  (per-stock today's input cache)
 // ════════════════════════════════════════════════════════════════
 var DRAFT_KEY = 'trading_drafts_by_symbol_v1';
+var WORKSPACE_IDS = ['price_current','price_high_recent','price_low_recent','cost_basis','bar_close','prev_close','today_open','ma5','ma10','ma20','rsi_5','rsi_10','rsi_5_prev','dif','signal_macd','osc','osc_prev','sh1','sh2','swing_h3','sl1','sl2','volume_now','volume_prev','daily_change_pct','chip_d0','chip_d1','chip_d2','chip_d3','chip_d4','position_pct','profit_pct','is_planned'];
+var _currentWorkspaceSym = '';  // tracks which symbol is currently loaded
  
 function getDraftStore() {
   try { var r = localStorage.getItem(DRAFT_KEY); return r ? JSON.parse(r) : {}; } catch(e) { return {}; }
@@ -2532,42 +2568,78 @@ function saveDraftStore(store) {
 function todayKey() {
   var d = new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 }
-function saveDraftForSymbol(sym) {
+ 
+// Save all workspace fields for a given symbol
+function saveWorkspaceForSymbol(sym) {
   try {
     if (!sym || sym.trim() === '') return;
     var store = getDraftStore();
     var inputs = {};
-    TRADE_IDS.forEach(function(id){ var el=document.getElementById(id); if(el) inputs[id]=el.value; });
-    store[sym.trim()] = { symbol:sym.trim(), updated_at:Date.now(), date_key:todayKey(), inputs:inputs, mainMode:currentMainMode, rhythm:currentRhythm };
-    // Keep max 20 symbols
+    WORKSPACE_IDS.forEach(function(id){ var el=document.getElementById(id); if(el) inputs[id]=el.value; });
+    store[sym.trim()] = { symbol:sym.trim(), updated_at:Date.now(), date_key:todayKey(), inputs:inputs };
     var keys = Object.keys(store);
     if (keys.length > 20) { delete store[keys[0]]; }
     saveDraftStore(store);
-  } catch(e) { console.warn('saveDraftForSymbol error:', e.message); }
-}
-function loadDraftForSymbol(sym) {
-  try {
-    if (!sym || sym.trim() === '') return false;
-    var store = getDraftStore();
-    var draft = store[sym.trim()];
-    if (!draft || !draft.inputs || draft.date_key !== todayKey()) return false;
-    TRADE_IDS.forEach(function(id){
-      var el=document.getElementById(id);
-      if(el && draft.inputs[id] !== undefined) el.value = draft.inputs[id];
-    });
-    // Show draft banner briefly
-    var banner = document.getElementById('draft-banner');
-    if (banner) {
-      banner.className = 'draft-banner show';
-      setTimeout(function(){ if(banner) banner.className = 'draft-banner'; }, 2000);
-    }
-    return true;
-  } catch(e) { console.warn('loadDraftForSymbol error:', e.message); return false; }
+  } catch(e) { console.warn('saveWorkspaceForSymbol error:', e.message); }
 }
  
-// Called by runAnalysis() and runP3Decision() — save draft after any execution
+// Load workspace for a symbol; clear fields if no workspace found
+function loadWorkspaceForSymbol(sym) {
+  try {
+    if (!sym || sym.trim() === '') return;
+    var store = getDraftStore();
+    var ws = store[sym.trim()];
+    if (ws && ws.inputs) {
+      // Restore saved values
+      WORKSPACE_IDS.forEach(function(id){
+        var el=document.getElementById(id);
+        if(el && ws.inputs[id] !== undefined) el.value = ws.inputs[id];
+      });
+      var banner = document.getElementById('draft-banner');
+      if (banner) {
+        banner.className = 'draft-banner show';
+        setTimeout(function(){ if(banner) banner.className = 'draft-banner'; }, 2000);
+      }
+    } else {
+      // No workspace for this symbol — clear all workspace fields to defaults
+      WORKSPACE_IDS.forEach(function(id){
+        var el=document.getElementById(id);
+        if(!el) return;
+        if(id === 'is_planned') el.value = 'true';
+        else if(id === 'position_pct') el.value = '0';
+        else el.value = '';
+      });
+    }
+    // Always sync chip module
+    try { loadChipModuleForSymbol(sym.trim()); } catch(e2) {}
+  } catch(e) { console.warn('loadWorkspaceForSymbol error:', e.message); }
+}
+ 
+// Called when symbol field changes — save old, load new, no analysis triggered
+function switchSymbolWorkspace(newSym) {
+  try {
+    newSym = (newSym||'').trim();
+    // 1. Save current workspace under old symbol
+    if (_currentWorkspaceSym && _currentWorkspaceSym !== newSym) {
+      saveWorkspaceForSymbol(_currentWorkspaceSym);
+    }
+    // 2. Update tracker
+    _currentWorkspaceSym = newSym;
+    // 3. Load new symbol workspace (clears if none)
+    if (newSym) loadWorkspaceForSymbol(newSym);
+  } catch(e) { console.warn('switchSymbolWorkspace error:', e.message); }
+}
+ 
+// Legacy aliases for compatibility
+function saveDraftForSymbol(sym) { saveWorkspaceForSymbol(sym); }
+function loadDraftForSymbol(sym) { loadWorkspaceForSymbol(sym); return true; }
+ 
+// Called by runAnalysis() and runP3Decision()
 function autoSaveDraft() {
-  try { saveDraftForSymbol(VS('symbol')); } catch(e) {}
+  try {
+    var sym = VS('symbol');
+    if (sym) saveWorkspaceForSymbol(sym);
+  } catch(e) {}
 }
  
 // ════════════════════════════════════════════════════════════════
@@ -2583,6 +2655,13 @@ function buildAnalysisSnapshot(tags, scores, proposed, risk, sl, d, P) {
     ['R1','R2','R3','R4a','R4b','R4c','R4d','R5','R6','R8'].forEach(function(r){
       riskFlags[r] = risk.rules ? risk.rules.some(function(x){return x.rule===r;}) : false;
     });
+    // Capture rendered P2 HTML sections from DOM
+    var p2Html = '';
+    try {
+      var sections = ['decision-box','risk-row','composite-bar-wrap','score-breakdown','scores-row','tags-grid','suggestion-grid','reason-wrap'];
+      // rebuild into a clean static snapshot
+      p2Html = buildP2SnapshotHtml(tags, scores, proposed, risk, sl, d, P);
+    } catch(e2) { p2Html = ''; }
     return {
       inputs: inputs,
       mainMode: currentMainMode,
@@ -2611,9 +2690,119 @@ function buildAnalysisSnapshot(tags, scores, proposed, risk, sl, d, P) {
         posState: proposed.posState || '-'
       },
       risk_flags: riskFlags,
-      risk_override: risk.override ? { rule: risk.override_rule, detail: risk.override_detail } : null
+      risk_override: risk.override ? { rule: risk.override_rule, detail: risk.override_detail } : null,
+      p2_snapshot_html: p2Html
     };
   } catch(e) { return null; }
+}
+ 
+function buildP2SnapshotHtml(tags, scores, proposed, risk, sl, d, P) {
+  var fa = risk.final_action;
+  var ak = tradeActionKey(fa);
+  var sym = d.symbol || VS('symbol') || '-';
+  var rhythmName = {swing:'波段',position:'趨勢持倉'}[currentRhythm] || currentRhythm;
+ 
+  // --- Decision box ---
+  var decHtml = '<div style="border:2px solid #3a4150;border-radius:8px;padding:12px;text-align:center;background:#111418;margin-bottom:8px">'
+    +'<div style="font-size:28px;font-weight:900;color:'+(fa==='出場'?'#ff5252':fa==='試單'||fa==='加碼'?'#00e676':fa==='續抱'?'#4da6ff':fa==='減碼'?'#ffa726':'#ffca28')+'">'+fa+'</div>'
+    +'<div style="font-size:11px;color:#6e7e90;margin-top:4px">'+sym+' | '+rhythmName+' | 綜合分 '+scores.score_composite+' | 風險分 '+scores.score_risk+' | L4: '+proposed.l4_code+'</div>'
+    +(risk.override?'<div style="margin-top:6px;padding:4px 8px;background:#1a0f00;border:1px solid #ffca28;border-radius:4px;font-size:10px;color:#ffca28">override ['+risk.override_rule+']: '+risk.override_detail+'</div>':'')
+    +(tags.structure_conflict?'<div style="margin-top:4px;padding:4px 8px;background:#1a1200;border:1px solid #ffca28;border-radius:4px;font-size:10px;color:#ffca28">CONFLICT: 結構訊號不一致，已降級</div>':'')
+    +'</div>';
+ 
+  // --- Risk flags ---
+  var allRules=['R1','R2','R3','R4a','R4b','R4c','R4d','R5','R6','R8'];
+  var trMap={};
+  if(risk.rules) risk.rules.forEach(function(r){trMap[r.rule]=true;});
+  var riskHtml='<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-bottom:8px">'
+    +allRules.map(function(r){var on=!!trMap[r];return '<div style="border:1px solid '+(on?'#ff5252':'#3a4150')+';border-radius:4px;padding:4px 6px;font-size:10px;font-weight:700;color:'+(on?'#ff5252':'#6e7e90')+';background:'+(on?'#1a0000':'#1a1f26')+'">'+r+'</div>';}).join('')
+    +'</div>';
+ 
+  // --- Scores ---
+  var scoreHtml='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px">'
+    +[{l:'趨勢',v:scores.score_trend,c:'#58a6ff'},{l:'動能',v:scores.score_momentum,c:'#bc8cff'},{l:'籌碼',v:scores.score_chip,c:'#39d353'},{l:'風險',v:scores.score_risk,c:'#f85149'}].map(function(item){
+      return '<div style="background:#111418;border:1px solid #3a4150;border-radius:6px;padding:8px;text-align:center"><div style="font-size:9px;color:#6e7e90">'+item.l+'</div><div style="font-size:22px;font-weight:800;color:'+item.c+'">'+item.v+'</div></div>';
+    }).join('')+'</div>';
+ 
+  // --- Tags ---
+  var bullT=['主升段','回測完成','動能加速','籌碼偏多','籌碼短多','多頭排列','放量突破','強勢區'];
+  var bearT=['下跌段','結構破壞','翻空','籌碼偏空','籌碼短空','空頭排列','超買','爆量過熱'];
+  var warnT=['回測中','動能衰退','整理末段','縮量整理','超賣','弱勢區'];
+  function tcolor(v){if(bullT.indexOf(v)>=0)return '#00e676';if(bearT.indexOf(v)>=0)return '#ff5252';if(warnT.indexOf(v)>=0)return '#ffca28';return '#b8c4d0';}
+  var tagDefs=[{k:'price_structure',l:'結構'},{k:'ma_alignment',l:'均線'},{k:'momentum',l:'動能'},{k:'chip',l:'籌碼'},{k:'volume',l:'量能'},{k:'rsi_zone',l:'RSI'}];
+  var tagsHtml='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:8px">'
+    +tagDefs.map(function(t){var v=tags[t.k]||'-';return '<div style="background:#1a1f26;border:1px solid #3a4150;border-radius:6px;padding:6px 8px"><div style="font-size:9px;color:#6e7e90">'+t.l+'</div><div style="font-size:11px;font-weight:700;color:'+tcolor(v)+'">'+v+'</div></div>';}).join('')
+    +'</div>';
+ 
+  // --- Suggestions ---
+  var posDesc='-';
+  if(fa==='試單') posDesc='+'+(proposed.trial_pct||P.trial_pct)+'%';
+  else if(fa==='加碼') posDesc='+'+(proposed.add_pct||P.add_pct)+'%';
+  else if(fa==='減碼'){var mr=risk.rules?risk.rules.filter(function(r){return r.pct;})[0]:null;posDesc=mr?mr.pct+'%':'-20%';}
+  else if(fa==='出場') posDesc='清倉';
+  else posDesc='不變';
+  var suggHtml='<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:8px">'
+    +'<div style="background:#111418;border:1px solid #3a4150;border-radius:6px;padding:8px"><div style="font-size:9px;color:#6e7e90">建議停損</div><div style="font-size:13px;font-weight:700;color:#f0f4f8">'+(sl?sl.price:'-')+'</div><div style="font-size:9px;color:#6e7e90">'+(sl?sl.desc:'')+'</div></div>'
+    +'<div style="background:#111418;border:1px solid #3a4150;border-radius:6px;padding:8px"><div style="font-size:9px;color:#6e7e90">部位變動</div><div style="font-size:13px;font-weight:700;color:#f0f4f8">'+posDesc+'</div><div style="font-size:9px;color:#6e7e90">當前：'+(proposed.posState||'-')+'</div></div>'
+    +'</div>';
+ 
+  // --- Decision basis ---
+  var basisHtml='<div style="padding:6px 10px;background:#111418;border-radius:6px"><span style="font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;background:#252b34;color:#4da6ff;border:1px solid #4da6ff">'+proposed.l4_code+'</span><div style="font-size:11px;color:#b8c4d0;margin-top:4px">'+proposed.detail+'</div></div>';
+ 
+  // --- Key inputs ---
+  var inputsHtml='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-bottom:8px;font-size:10px">'
+    +[['現價',d.price_current],['SL1',d.sl1],['持倉%',d.position_pct],['MA5',d.ma5],['MA10',d.ma10],['RSI(5)',d.rsi_5]].map(function(item){
+      return '<div style="background:#0d1117;border:1px solid #1a1f26;border-radius:3px;padding:3px 5px"><div style="color:#3a4150">'+item[0]+'</div><div style="color:#b8c4d0;font-weight:600">'+(item[1]!==null&&item[1]!==undefined?item[1]:'-')+'</div></div>';
+    }).join('')+'</div>';
+ 
+  return inputsHtml + decHtml + riskHtml + scoreHtml + tagsHtml + suggHtml + basisHtml;
+}
+ 
+// ════════════════════════════════════════════════════════════════
+//  P3 SNAPSHOT HTML BUILDER
+// ════════════════════════════════════════════════════════════════
+function buildP3SnapshotHtml(snap, l4, l5) {
+  try {
+    var fa = l5.final_action;
+    var faColor = fa==='出場'?'#ff5252':fa==='試單'||fa==='加碼'?'#00e676':fa==='續抱'?'#4da6ff':fa==='減碼'?'#ffa726':'#ffca28';
+    // Input snapshot grid
+    var snapItems = [
+      {l:'標的',v:snap.symbol},{l:'節奏',v:snap.rhythm},{l:'綜合分',v:snap.score_composite},
+      {l:'風險分',v:snap.score_risk},{l:'結構',v:snap.tag_price_structure},{l:'動能',v:snap.tag_momentum},
+      {l:'籌碼',v:snap.tag_chip},{l:'持倉狀態',v:snap.current_position_state},{l:'持倉%',v:snap.position_pct+'%'},
+      {l:'損益%',v:(snap.profit_pct>=0?'+':'')+snap.profit_pct.toFixed(1)+'%'},{l:'計畫內',v:snap.is_planned?'是':'否'},{l:'結構一致',v:snap.structure_conflict?'衝突':'一致'}
+    ];
+    var snapHtml='<div style="margin-bottom:8px"><div style="font-size:9px;color:#6e7e90;text-transform:uppercase;margin-bottom:4px">輸入快照</div>'
+      +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:3px">'
+      +snapItems.map(function(item){
+        return '<div style="background:#0d1117;border:1px solid #1a1f26;border-radius:3px;padding:3px 5px"><div style="font-size:8px;color:#3a4150">'+item.l+'</div><div style="font-size:11px;font-weight:600;color:#b8c4d0">'+(item.v!==null&&item.v!==undefined?item.v:'-')+'</div></div>';
+      }).join('')+'</div></div>';
+ 
+    // L4
+    var l4Html='<div style="margin-bottom:8px"><div style="font-size:9px;color:#6e7e90;text-transform:uppercase;margin-bottom:4px">L4 建議動作</div>'
+      +'<div style="background:#111418;border:1px solid #252b34;border-radius:6px;padding:10px">'
+      +'<div style="font-size:18px;font-weight:800;color:#4da6ff">'+l4.proposed_action+'</div>'
+      +'<div style="display:inline-block;font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;background:#0d1a2e;color:#4da6ff;border:1px solid #4da6ff;margin:4px 0">'+l4.l4_reason_code+'</div>'
+      +'<div style="font-size:11px;color:#b8c4d0">'+l4.l4_reason_summary+'</div>'
+      +'</div></div>';
+ 
+    // L5
+    var l5Color = l5.override_triggered ? '#ffca28' : '#00e676';
+    var l5Html='<div style="margin-bottom:8px"><div style="font-size:9px;color:#6e7e90;text-transform:uppercase;margin-bottom:4px">L5 風控覆蓋</div>'
+      +'<div style="background:#111418;border:1px solid '+(l5.override_triggered?'#ffca28':'#00c853')+';border-radius:6px;padding:10px">'
+      +'<div style="font-size:12px;font-weight:700;color:'+l5Color+'">'+(l5.override_triggered?'override 觸發':'風控通過，無覆蓋')+'</div>'
+      +(l5.override_triggered?'<div style="font-size:10px;color:#b8c4d0;margin-top:4px">['+l5.override_rule+'] '+l5.override_reason+'</div>':'<div style="font-size:10px;color:#6e7e90;margin-top:4px">所有風控規則均未觸發</div>')
+      +'</div></div>';
+ 
+    // Final action
+    var finalHtml='<div style="border:2px solid '+faColor+';border-radius:8px;padding:14px;text-align:center;background:#0d1117">'
+      +'<div style="font-size:10px;color:#6e7e90;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">FINAL ACTION</div>'
+      +'<div style="font-size:40px;font-weight:900;color:'+faColor+'">'+fa+'</div>'
+      +'<div style="font-size:10px;color:#6e7e90;margin-top:6px">'+snap.symbol+' | 節奏 '+snap.rhythm+'<br>'+(l5.override_triggered?'['+l5.override_rule+'] 覆蓋 L4':'L4: '+l4.proposed_action+' / 風控通過')+'</div>'
+      +'</div>';
+ 
+    return snapHtml + l4Html + l5Html + finalHtml;
+  } catch(e) { return '<div style="color:#ff5252;font-size:10px">P3快照渲染錯誤: '+String(e.message)+'</div>'; }
 }
  
 // ════════════════════════════════════════════════════════════════
@@ -2621,90 +2810,45 @@ function buildAnalysisSnapshot(tags, scores, proposed, risk, sl, d, P) {
 // ════════════════════════════════════════════════════════════════
 function p4SnapshotHtml(entry) {
   try {
+    var eid = entry.id;
     var snap = entry.snapshot;
     if (!snap) {
-      return '<div class="p4-snapshot-section"><div class="p4-snapshot-missing">此紀錄建立於舊版，無完整分析快照</div></div>';
+      return '<div class="p4-snapshot-section"><div class="p4-snapshot-missing">\u6b64\u7d00\u9304\u5efa\u7acb\u65bc\u820a\u7248\uff0c\u7121\u5b8c\u6574\u5206\u6790\u5feb\u7167</div></div>';
     }
- 
-    function sval(v, bullVals, bearVals) {
-      if (v === null || v === undefined) return '<span class="p4-snapshot-val">-</span>';
-      var cls = '';
-      if (bullVals && bullVals.indexOf(String(v)) >= 0) cls = ' bull';
-      else if (bearVals && bearVals.indexOf(String(v)) >= 0) cls = ' bear';
-      return '<span class="p4-snapshot-val'+cls+'">'+p4esc(String(v))+'</span>';
-    }
-    function nval(v, prefix) {
-      if (v === null || v === undefined) return '<span class="p4-snapshot-val">-</span>';
-      var cls = v > 0 ? ' bull' : v < 0 ? ' bear' : '';
-      return '<span class="p4-snapshot-val'+cls+'">'+(prefix||'')+(v > 0 ? '+' : '')+v+'</span>';
-    }
- 
-    var t = snap.tags || {}, sc = snap.scores || {}, sg = snap.suggestions || {};
-    var rf = snap.risk_flags || {};
-    var inp = snap.inputs || {};
-    var p3s = snap.p3 || {};
- 
-    var triggeredRules = Object.keys(rf).filter(function(k){return rf[k];});
- 
-    // Inputs summary (key fields only)
-    var inputsHtml = '<div class="p4-snapshot-group"><div class="p4-snapshot-group-label">輸入</div><div class="p4-snapshot-grid">'
-      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">現價</div>'+sval(inp.price_current)+'</div>'
-      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">持倉%</div>'+sval(inp.position_pct)+'</div>'
-      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">損益%</div>'+sval(inp.profit_pct)+'</div>'
-      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">MA5</div>'+sval(inp.ma5)+'</div>'
-      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">RSI(5)</div>'+sval(inp.rsi_5)+'</div>'
-      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">SL1</div>'+sval(inp.sl1)+'</div>'
-      +'</div></div>';
- 
-    // Tags
-    var tagsHtml = '<div class="p4-snapshot-group"><div class="p4-snapshot-group-label">技術標籤</div><div class="p4-snapshot-grid">'
-      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">結構</div>'+sval(t.price_structure,['主升段','回測完成'],['下跌段','結構破壞'])+'</div>'
-      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">均線</div>'+sval(t.ma_alignment,['多頭排列'],['空頭排列'])+'</div>'
-      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">動能</div>'+sval(t.momentum,['動能加速'],['翻空'])+'</div>'
-      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">籌碼</div>'+sval(t.chip,['籌碼偏多','籌碼短多'],['籌碼偏空','籌碼短空'])+'</div>'
-      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">量能</div>'+sval(t.volume,['放量突破'],['爆量過熱'])+'</div>'
-      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">RSI區</div>'+sval(t.rsi_zone,['強勢區'],['超買','弱勢區'])+'</div>'
-      +'</div></div>';
- 
-    // Scores
-    var scoresHtml = '<div class="p4-snapshot-group"><div class="p4-snapshot-group-label">分數</div><div class="p4-snapshot-grid">'
-      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">綜合</div>'+nval(sc.score_composite)+'</div>'
-      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">趨勢</div>'+nval(sc.score_trend)+'</div>'
-      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">動能</div>'+nval(sc.score_momentum)+'</div>'
-      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">籌碼</div>'+nval(sc.score_chip)+'</div>'
-      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">風險</div>'+nval(sc.score_risk)+'</div>'
-      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">節奏</div>'+sval(snap.rhythm)+'</div>'
-      +'</div></div>';
- 
-    // Decision
-    var p3Html = '';
-    if (p3s.l4 || p3s.l5) {
-      var l4 = p3s.l4 || {}, l5 = p3s.l5 || {};
-      p3Html = '<div class="p4-snapshot-group"><div class="p4-snapshot-group-label">P3 決策</div><div class="p4-snapshot-grid">'
-        +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">L4 建議</div>'+sval(l4.proposed_action)+'</div>'
-        +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">L4 Code</div><span class="p4-snapshot-val" style="font-size:9px">'+p4esc(l4.l4_reason_code||'-')+'</span></div>'
-        +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">最終</div>'+sval(l5.final_action)+'</div>'
-        +'<div class="p4-snapshot-item" style="grid-column:1/-1"><div class="p4-snapshot-key">Override</div><span class="p4-snapshot-val" style="font-size:9px">'+p4esc(l5.override_triggered?('['+l5.override_rule+'] '+l5.override_reason):'無')+'</span></div>'
-        +'</div></div>';
-    }
- 
-    // Risk flags
-    var riskHtml = '<div class="p4-snapshot-group"><div class="p4-snapshot-group-label">風控觸發</div><div style="font-size:11px;color:'+(triggeredRules.length?'#ff5252':'#00e676')+';font-weight:700;padding:2px 0">'+(triggeredRules.length?triggeredRules.join(' '):'全通過')+'</div></div>';
- 
-    // Suggestions
-    var suggHtml = '<div class="p4-snapshot-group"><div class="p4-snapshot-group-label">建議參數</div><div class="p4-snapshot-grid">'
-      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">建議停損</div>'+sval(sg.sl_price)+'</div>'
-      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">持倉狀態</div>'+sval(sg.posState)+'</div>'
-      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">L4提案</div>'+sval(sg.proposed_action)+'</div>'
-      +'</div></div>';
- 
-    return '<div class="p4-snapshot-section">'
-      +'<div class="p4-snapshot-hdr">&#x1F4CA; 分析快照（記錄時）</div>'
-      + inputsHtml + tagsHtml + scoresHtml + p3Html + riskHtml + suggHtml
+    var p2Html = snap.p2_snapshot_html || '';
+    var p3Html = snap.p3_snapshot_html || '';
+    var hasP2 = p2Html.length > 0;
+    var hasP3 = p3Html.length > 0;
+    var k2 = eid+'-p2', k3 = eid+'-p3';
+    var out = '';
+    // P2 collapsible — use data-key to avoid quote nesting
+    out += '<button class="p4-snap-toggle" data-snapkey="'+k2+'" onclick="p4SnapToggle(this.getAttribute(\'data-snapkey\'))">'
+      +'<span>&#x1F4CA; P2 \u6280\u8853\u5206\u6790\u5feb\u7167</span>'
+      +'<span class="p4-snap-toggle-icon" id="p4-sicon-'+k2+'">&#x25BC;</span></button>'
+      +'<div class="p4-snap-content" id="p4-scontent-'+k2+'">'
+      +(hasP2 ? p2Html : '<div class="p4-snapshot-missing">P2 \u5feb\u7167\u672a\u8a18\u9304\uff08\u8acb\u91cd\u65b0\u57f7\u884c\u5206\u6790\uff09</div>')
       +'</div>';
+    // P3 collapsible
+    out += '<button class="p4-snap-toggle p3" data-snapkey="'+k3+'" onclick="p4SnapToggle(this.getAttribute(\'data-snapkey\'))">'
+      +'<span>&#x26A1; P3 \u51b3\u7b56\u5feb\u7167</span>'
+      +'<span class="p4-snap-toggle-icon" id="p4-sicon-'+k3+'">&#x25BC;</span></button>'
+      +'<div class="p4-snap-content" id="p4-scontent-'+k3+'">'
+      +(hasP3 ? p3Html : '<div class="p4-snapshot-missing">P3 \u5feb\u7167\u672a\u8a18\u9304\uff08\u8acb\u5148\u57f7\u884c P3 \u51b3\u7b56\uff09</div>')
+      +'</div>';
+    return out;
   } catch(e) {
-    return '<div class="p4-snapshot-section"><div class="p4-snapshot-missing">快照顯示錯誤：'+p4esc(String(e.message))+'</div></div>';
+    return '<div class="p4-snapshot-section"><div class="p4-snapshot-missing">\u5feb\u7167\u986f\u793a\u932f\u8aa4\uff1a'+p4esc(String(e.message))+'</div></div>';
   }
+}
+function p4SnapToggle(key) {
+  try {
+    var content = document.getElementById('p4-scontent-'+key);
+    var icon    = document.getElementById('p4-sicon-'+key);
+    if (!content) return;
+    var isOpen = content.classList.contains('open');
+    content.className = isOpen ? 'p4-snap-content' : 'p4-snap-content open';
+    if (icon) icon.className = isOpen ? 'p4-snap-toggle-icon' : 'p4-snap-toggle-icon open';
+  } catch(e) {}
 }
  
 </script>
