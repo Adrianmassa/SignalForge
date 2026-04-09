@@ -17,7 +17,7 @@ body {
 @media (prefers-color-scheme: light) {
   html, body { background-color: #0a0c0f !important; color: #f0f4f8 !important; }
 }
-
+ 
 /* ── HEADER ── */
 .header {
   background-color: #111418; border-bottom: 2px solid #3a4150;
@@ -35,7 +35,7 @@ body {
 }
 .mode-indicator.trade { background-color: #001a33; border-color: #4da6ff; color: #4da6ff; }
 .mode-indicator.invest { background-color: #1a1a00; border-color: #ffd700; color: #ffd700; }
-
+ 
 /* ── LAYOUT ── */
 .layout {
   display: grid; grid-template-columns: 400px 1fr;
@@ -52,7 +52,7 @@ body {
   .input-panel { height: auto; overflow: visible; border-right: none; border-bottom: 2px solid #3a4150; }
   .output-panel { height: auto; }
 }
-
+ 
 /* ── SECTION HEADERS ── */
 .section-hdr {
   padding: 10px 14px; background-color: #1a1f26;
@@ -68,7 +68,7 @@ body {
 .dot-purple { background-color: #ce93d8; }
 .dot-gold   { background-color: #ffd700; }
 .opt-label { margin-left: auto; font-size: 10px; color: #ffca28; text-transform: none; font-weight: 600; }
-
+ 
 /* ── INPUT GRIDS ── */
 .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background-color: #3a4150; border-bottom: 1px solid #3a4150; }
 .input-grid.cols3 { grid-template-columns: 1fr 1fr 1fr; }
@@ -90,7 +90,7 @@ body {
 .chip-cell label { font-size: 10px; font-weight: 600; color: #6e7e90; text-transform: uppercase; display: block; margin-bottom: 3px; }
 .chip-cell input { width: 100%; background-color: #1a1f26; border: 1px solid #3a4150; border-radius: 4px; color: #f0f4f8; font-family: inherit; font-size: 14px; font-weight: 600; padding: 4px 6px; outline: none; -webkit-appearance: none; }
 .chip-cell input:focus { border-color: #4da6ff; }
-
+ 
 /* ── ANALYSE BUTTON ── */
 .analyse-wrap { padding: 14px; border-bottom: 1px solid #3a4150; background-color: #111418; }
 .btn-analyse {
@@ -101,7 +101,7 @@ body {
 .btn-analyse.trade { background-color: #1a56a0; border-color: #4da6ff; }
 .btn-analyse.invest { background-color: #3a3000; border-color: #ffd700; }
 .btn-analyse:active { opacity: .8; }
-
+ 
 /* ── OUTPUT SECTIONS ── */
 .out-section { border-bottom: 2px solid #3a4150; }
 .decision-wrap { padding: 12px; }
@@ -124,7 +124,7 @@ body {
   font-size: 11px; color: #ffca28; display: none;
 }
 .conflict-banner.show { display: block; }
-
+ 
 /* action colours — trade mode */
 .act-trade-not-enter { color: #6e7e90 !important; }
 .act-trade-watch     { color: #ffca28 !important; }
@@ -141,7 +141,7 @@ body {
 .act-inv-hold        { color: #4da6ff !important; }
 .act-inv-weak        { color: #ffa726 !important; }
 .act-inv-track       { color: #ce93d8 !important; }
-
+ 
 /* box border by action — trade */
 .box-trade-not-enter { border-color: #3a4150 !important; }
 .box-trade-watch     { border-color: #ffca28 !important; background-color: #1a1000 !important; }
@@ -158,7 +158,7 @@ body {
 .box-inv-hold        { border-color: #4da6ff !important; background-color: #001133 !important; }
 .box-inv-weak        { border-color: #ffa726 !important; background-color: #1a0f00 !important; }
 .box-inv-track       { border-color: #ce93d8 !important; background-color: #1a0a1a !important; }
-
+ 
 /* ── RISK ROW ── */
 .risk-row { display: grid; grid-template-columns: repeat(5,1fr); gap: 6px; padding: 10px 12px; }
 .risk-item { background-color: #1a1f26; border: 2px solid #3a4150; border-radius: 6px; padding: 6px 8px; display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; }
@@ -167,7 +167,7 @@ body {
 .risk-label { color: #6e7e90; }
 .risk-item.triggered { border-color: #ff5252; background-color: #1a0000; }
 .risk-item.triggered .risk-label { color: #ff5252; font-weight: 800; }
-
+ 
 /* ── TAGS ── */
 .tags-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; padding: 12px; }
 .tag-card { background-color: #1a1f26; border: 2px solid #3a4150; border-radius: 8px; padding: 10px 10px 8px; }
@@ -180,7 +180,7 @@ body {
 .tag-warn { border-color: #7a5000; background-color: #1a1000; }
 .tag-warn .tag-value { color: #ffca28; }
 .tag-neutral .tag-value { color: #b8c4d0; }
-
+ 
 /* ── SCORES ── */
 .scores-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; padding: 12px; }
 .score-card { background-color: #111418; border: 2px solid #3a4150; border-radius: 8px; padding: 10px 8px; text-align: center; position: relative; overflow: hidden; }
@@ -190,7 +190,7 @@ body {
 .score-value { font-size: 26px; font-weight: 800; margin: 4px 0 2px; color: #b8c4d0; }
 .score-card.filled .score-value { color: var(--score-color, #4da6ff); }
 .score-sub { font-size: 9px; color: #6e7e90; }
-
+ 
 /* ── COMPOSITE BAR ── */
 .composite-bar-wrap { padding: 10px 12px; }
 .composite-bar-label { display: flex; justify-content: space-between; margin-bottom: 7px; font-size: 13px; font-weight: 600; color: #b8c4d0; }
@@ -207,7 +207,7 @@ body {
 .bd-bar-track { flex: 1; height: 6px; background-color: #252b34; border-radius: 3px; overflow: hidden; }
 .bd-bar-fill { height: 100%; border-radius: 3px; }
 .bd-val { font-size: 12px; font-weight: 700; width: 28px; text-align: right; flex-shrink: 0; }
-
+ 
 /* ── SUGGESTIONS ── */
 .suggestion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px 12px; }
 .sugg-card { background-color: #111418; border: 2px solid #3a4150; border-radius: 8px; padding: 10px 12px; }
@@ -217,7 +217,7 @@ body {
 .reason-wrap { padding: 8px 12px 12px; }
 .reason-code { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 4px; background-color: #252b34; color: #4da6ff; border: 1px solid #4da6ff; }
 .reason-text { font-size: 12px; color: #b8c4d0; margin-top: 6px; line-height: 1.6; }
-
+ 
 /* ── INVEST OUTPUT CARDS ── */
 .invest-out-wrap { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
 .invest-card { background-color: #111418; border: 1px solid #252b34; border-radius: 8px; padding: 12px 14px; }
@@ -225,12 +225,12 @@ body {
 .invest-card-value { font-size: 14px; font-weight: 700; color: #b8c4d0; line-height: 1.5; }
 .invest-card.highlight { border-color: #ffd700; background-color: #1a1800; }
 .invest-card.highlight .invest-card-value { color: #ffd700; }
-
+ 
 /* ── EMPTY STATE ── */
 .empty-state { padding: 80px 20px; text-align: center; }
 .empty-icon { font-size: 48px; margin-bottom: 16px; opacity: .3; }
 .empty-text { font-size: 15px; color: #6e7e90; font-weight: 500; }
-
+ 
 /* ── P3 SECTION ── */
 .p3-section { border-top: 3px solid #4da6ff; background-color: #0a0c0f; }
 .p3-section.invest-mode { border-top-color: #ffd700; }
@@ -291,7 +291,7 @@ body {
   .tags-grid { grid-template-columns: repeat(2,1fr); }
   .risk-row { grid-template-columns: repeat(4,1fr); }
 }
-
+ 
 /* ── P1 PANEL ── */
 #p1-dashboard { background-color: #0d1117; border-bottom: 3px solid #1f3a5f; }
 .p1-header { background-color: #0d1a2e; border-bottom: 2px solid #1f3a5f; padding: 10px 16px; display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
@@ -301,7 +301,7 @@ body {
 .p1-toggle-icon.open { transform: rotate(180deg); }
 #p1-body { display: none; }
 #p1-body.open { display: block; }
-
+ 
 /* Mode selector */
 .p1-mode-wrap { padding: 14px 16px; background-color: #0d1117; border-bottom: 1px solid #1f3a5f; }
 .p1-mode-label { font-size: 10px; font-weight: 700; color: #6e7e90; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
@@ -314,7 +314,7 @@ body {
 }
 .p1-mode-btn.active-trade { background-color: #001a33; border-color: #4da6ff; color: #4da6ff; }
 .p1-mode-btn.active-invest { background-color: #1a1800; border-color: #ffd700; color: #ffd700; }
-
+ 
 /* Rhythm selector (trade mode only) */
 .p1-rhythm-wrap { padding: 10px 16px 14px; background-color: #0d1117; border-bottom: 1px solid #1f3a5f; }
 .p1-rhythm-label { font-size: 10px; font-weight: 700; color: #6e7e90; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
@@ -322,7 +322,7 @@ body {
 .p1-rhythm-btn { flex: 1; padding: 7px 4px; border-radius: 6px; border: 1px solid #3a4150; background-color: #1a1f26; color: #6e7e90; cursor: pointer; font-size: 12px; font-weight: 600; font-family: inherit; text-align: center; -webkit-appearance: none; }
 .p1-rhythm-btn.active { background-color: #001a33; border-color: #4da6ff; color: #4da6ff; font-weight: 800; }
 .p1-rhythm-note { font-size: 10px; color: #3a4150; margin-top: 6px; font-style: italic; }
-
+ 
 /* Watchlist */
 .p1-card { background-color: #111418; }
 .p1-card-hdr { padding: 8px 12px; background-color: #0d1a2e; border-bottom: 1px solid #1f3a5f; font-size: 10px; font-weight: 700; color: #4da6ff; letter-spacing: .8px; text-transform: uppercase; display: flex; align-items: center; gap: 6px; border-top: 1px solid #0a0c0f; }
@@ -345,7 +345,7 @@ body {
 .p1-wl-del { background: none; border: none; color: #6e7e90; font-size: 14px; cursor: pointer; padding: 0 2px; font-family: inherit; }
 .p1-wl-error { font-size: 11px; color: #ff5252; font-weight: 600; margin-top: 4px; min-height: 16px; }
 .p1-watchlist-empty { font-size: 11px; color: #3a4150; text-align: center; padding: 12px 0; font-style: italic; }
-
+ 
 /* ── CHIP MODULE ── */
 .chip-module-wrap { padding: 10px 12px 14px; border-bottom: 1px solid #3a4150; background-color: #111418; }
 .chip-module-hdr { font-size: 10px; font-weight: 700; color: #6e7e90; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
@@ -399,19 +399,21 @@ body {
 /* Sparkline */
 .chip-spark-wrap { margin-top: 8px; }
 .chip-spark-label { font-size: 9px; color: #6e7e90; font-weight: 700; text-transform: uppercase; letter-spacing: .3px; margin-bottom: 4px; }
-.chip-spark-bars { display: flex; align-items: center; gap: 2px; height: 48px; position: relative; }
-.chip-spark-bars::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background-color: #3a4150; }
-.chip-spark-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: center; }
+.chip-spark-bars { display: flex; align-items: stretch; gap: 2px; height: 48px; position: relative; }
+.chip-spark-bars::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background-color: #3a4150; z-index: 1; }
+.chip-spark-bar-wrap { flex: 1; display: grid; grid-template-rows: 1fr 1fr; height: 100%; }
+.chip-spark-bar-top { display: flex; align-items: flex-end; }
+.chip-spark-bar-bot { display: flex; align-items: flex-start; }
 .chip-spark-bar { width: 100%; min-height: 2px; border-radius: 1px; }
-.chip-spark-bar.pos { align-self: flex-end; margin-bottom: 24px; }
-.chip-spark-bar.neg { align-self: flex-start; margin-top: 24px; }
-.chip-spark-bar.zero { height: 2px !important; }
+.chip-spark-bar.pos { background-color: #ff5252; }
+.chip-spark-bar.neg { background-color: #00e676; }
+.chip-spark-bar.zero { background-color: #3a4150; height: 2px !important; }
 .chip-spark-bar.pos { background-color: #ff5252; }
 .chip-spark-bar.neg { background-color: #00e676; }
 .chip-spark-bar.zero { background-color: #3a4150; }
 /* P4 chip detail */
 .p4-chip-ref-section { margin-top: 6px; padding-top: 6px; border-top: 1px solid #1a1f26; }
-
+ 
 /* ── P4 PANEL ── */
 #p4-journal { background-color: #0a0c0f; border-top: 3px solid #252b34; }
 .p4-header { background-color: #111418; border-bottom: 2px solid #252b34; padding: 10px 16px; display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
@@ -477,7 +479,7 @@ body {
 </style>
 </head>
 <body>
-
+ 
 <!-- HEADER -->
 <div class="header">
   <span class="header-title">&#x1F4C8; 交易分析系統</span>
@@ -485,7 +487,7 @@ body {
   <span class="header-badge badge-offline">OFFLINE</span>
   <span class="mode-indicator" id="mode-indicator">未選擇模式</span>
 </div>
-
+ 
 <!-- P1: ENTRY CONTROL -->
 <div id="p1-dashboard">
   <div class="p1-header" onclick="p1ToggleBody()">
@@ -495,7 +497,7 @@ body {
     <span class="p1-toggle-icon" id="p1-toggle-icon">&#x25BC;</span>
   </div>
   <div id="p1-body">
-
+ 
     <!-- Mode selector -->
     <div class="p1-mode-wrap">
       <div class="p1-mode-label">分析模式</div>
@@ -508,7 +510,7 @@ body {
         </button>
       </div>
     </div>
-
+ 
     <!-- Rhythm (trade mode only) -->
     <div class="p1-rhythm-wrap" id="p1-rhythm-section" style="display:none">
       <div class="p1-rhythm-label">交易節奏（次級設定）</div>
@@ -518,7 +520,7 @@ body {
       </div>
       <div class="p1-rhythm-note">此設定僅影響建議部位比例與節奏，不影響核心決策邏輯</div>
     </div>
-
+ 
     <!-- Watchlist -->
     <div class="p1-card">
       <div class="p1-card-hdr">
@@ -537,20 +539,20 @@ body {
         </div>
       </div>
     </div>
-
+ 
   </div><!-- /p1-body -->
 </div><!-- /p1-dashboard -->
-
+ 
 <!-- MAIN LAYOUT -->
 <div class="layout">
-
+ 
   <!-- LEFT: INPUT PANEL -->
   <div class="input-panel" id="input-panel">
     <div class="empty-state" id="input-empty-state">
       <div class="empty-icon">&#x1F4CB;</div>
       <div class="empty-text">請先在 P1 選擇分析模式</div>
     </div>
-
+ 
     <!-- TRADE MODE INPUTS -->
     <div id="trade-inputs" style="display:none">
       <div class="section-hdr"><span class="dot"></span>基本資訊</div>
@@ -650,7 +652,7 @@ body {
         <button class="btn-analyse trade" onclick="runAnalysis()">&#x26A1; 執行技術分析</button>
       </div>
     </div><!-- /trade-inputs -->
-
+ 
     <!-- INVEST MODE INPUTS -->
     <div id="invest-inputs" style="display:none">
       <div class="section-hdr"><span class="dot dot-gold"></span>基本資訊</div>
@@ -705,16 +707,16 @@ body {
         <button class="btn-analyse invest" onclick="runInvestAnalysis()">&#x1F4CA; 執行投資分析</button>
       </div>
     </div><!-- /invest-inputs -->
-
+ 
   </div><!-- /input-panel -->
-
+ 
   <!-- RIGHT: OUTPUT PANEL -->
   <div class="output-panel" id="output-panel">
     <div class="empty-state" id="output-empty-state">
       <div class="empty-icon">&#x1F4CA;</div>
       <div class="empty-text">填入數據後按執行分析</div>
     </div>
-
+ 
     <!-- TRADE OUTPUT -->
     <div id="trade-result" style="display:none">
       <div class="out-section">
@@ -766,7 +768,7 @@ body {
         </div>
       </div>
     </div><!-- /trade-result -->
-
+ 
     <!-- INVEST OUTPUT -->
     <div id="invest-result" style="display:none">
       <div class="out-section">
@@ -787,7 +789,7 @@ body {
         <div class="invest-out-wrap" id="inv-summary-wrap"></div>
       </div>
     </div><!-- /invest-result -->
-
+ 
     <!-- P3 DECISION SECTION (trade only) -->
     <div id="p3-section" class="p3-section" style="display:none">
       <div class="p3-section-hdr">
@@ -835,7 +837,7 @@ body {
           <div class="p3-final-sub" id="p3-final-sub">執行決策後顯示結果</div>
         </div>
       </div>
-
+ 
       <!-- CHIP REFERENCE PANEL (reference only, does not affect final_action) -->
       <div class="chip-ref-panel" id="chip-ref-panel" style="display:none">
         <div class="chip-ref-hdr">
@@ -849,10 +851,10 @@ body {
       </div>
       <div id="p3-debug-area" class="p3-debug-area"></div>
     </div><!-- /p3-section -->
-
+ 
   </div><!-- /output-panel -->
 </div><!-- /layout -->
-
+ 
 <!-- P4: JOURNAL -->
 <div id="p4-journal">
   <div class="p4-header" onclick="p4ToggleBody()">
@@ -873,14 +875,14 @@ body {
     </div>
   </div>
 </div>
-
+ 
 <script>
 // ════════════════════════════════════════════════════════════════
 //  STATE
 // ════════════════════════════════════════════════════════════════
 var currentMainMode = '';   // 'trade' | 'invest'
 var currentRhythm   = 'swing'; // trade sub-setting: 'swing' | 'position'
-
+ 
 // Trade mode templates (rhythm-based, not A/B)
 var TEMPLATES = {
   swing: {
@@ -898,29 +900,29 @@ var TEMPLATES = {
     rsi_ob:75, rsi_strong:60, rsi_weak:45, rsi_os:30, sl_offset:-3
   }
 };
-
+ 
 // P3 snapshot
 var p3InputSnapshot = null;
 var p3L4Result = null;
 var p3L5Result = null;
 var VALID_TRADE_ACTIONS = ['不進場','觀察','試單','加碼','續抱','減碼','出場'];
-
+ 
 // ════════════════════════════════════════════════════════════════
 //  MODE CONTROL
 // ════════════════════════════════════════════════════════════════
 function setMainMode(mode) {
   currentMainMode = mode;
-
+ 
   var btnTrade  = document.getElementById('mode-btn-trade');
   var btnInvest = document.getElementById('mode-btn-invest');
   var rhythmSec = document.getElementById('p1-rhythm-section');
   var indicator = document.getElementById('mode-indicator');
   var badge     = document.getElementById('p1-mode-badge');
-
+ 
   btnTrade.className  = 'p1-mode-btn' + (mode === 'trade'  ? ' active-trade'  : '');
   btnInvest.className = 'p1-mode-btn' + (mode === 'invest' ? ' active-invest' : '');
   rhythmSec.style.display = mode === 'trade' ? 'block' : 'none';
-
+ 
   if (mode === 'trade') {
     indicator.textContent = '交易模式';
     indicator.className = 'mode-indicator trade';
@@ -946,14 +948,14 @@ function setMainMode(mode) {
   }
   saveState();
 }
-
+ 
 function setRhythm(r) {
   currentRhythm = r;
   document.getElementById('rhythm-btn-swing').className    = 'p1-rhythm-btn' + (r === 'swing'    ? ' active' : '');
   document.getElementById('rhythm-btn-position').className = 'p1-rhythm-btn' + (r === 'position' ? ' active' : '');
   saveState();
 }
-
+ 
 // ════════════════════════════════════════════════════════════════
 //  HELPERS
 // ════════════════════════════════════════════════════════════════
@@ -985,7 +987,7 @@ function investActionKey(a) {
   if (a === '持續追蹤')   return 'track';
   return 'no';
 }
-
+ 
 // ════════════════════════════════════════════════════════════════
 //  TRADE MODE: TAG GENERATION
 // ════════════════════════════════════════════════════════════════
@@ -995,7 +997,7 @@ function genTags(d, P) {
   var bar_close = d.bar_close, prev_close = d.prev_close;
   var rsi_5 = d.rsi_5, rsi_5_prev = d.rsi_5_prev;
   var ma5 = d.ma5, ma10 = d.ma10, ma20 = d.ma20;
-
+ 
   // price_structure (strict 5-condition downtrend)
   if (sl1 !== null && sl2 !== null && sh1 !== null && sh2 !== null && bar_close !== null) {
     var hhl = sh1 < sh2 && sl1 < sl2;
@@ -1020,14 +1022,14 @@ function genTags(d, P) {
       tags.price_structure = '整理末段';
     }
   } else { tags.price_structure = '整理末段'; }
-
+ 
   // ma_alignment
   if (ma5 !== null && ma10 !== null && ma20 !== null) {
     if (ma5 > ma10 && ma10 > ma20) tags.ma_alignment = '多頭排列';
     else if (ma5 < ma10 && ma10 < ma20) tags.ma_alignment = '空頭排列';
     else tags.ma_alignment = '糾結';
   } else { tags.ma_alignment = '糾結'; }
-
+ 
   // momentum
   var osc = d.osc, osc_prev = d.osc_prev;
   if (rsi_5 !== null && rsi_5_prev !== null && osc !== null && osc_prev !== null) {
@@ -1038,7 +1040,7 @@ function genTags(d, P) {
   } else if (rsi_5 !== null) {
     tags.momentum = rsi_5 < P.rsi_weak ? '翻空' : '緩漲';
   } else { tags.momentum = '動能衰退'; }
-
+ 
   // chip
   var c0 = d.chip_d0, c1 = d.chip_d1, c2 = d.chip_d2;
   if (c0 !== null && c1 !== null && c2 !== null) {
@@ -1050,7 +1052,7 @@ function genTags(d, P) {
   } else if (c0 !== null) {
     tags.chip = c0 > 0 ? '籌碼短多' : c0 < 0 ? '籌碼短空' : '中性';
   } else { tags.chip = '中性'; }
-
+ 
   // volume
   var vn = d.volume_now, vp = d.volume_prev, dc = d.daily_change_pct;
   if (vn !== null && vp !== null && vp > 0) {
@@ -1061,7 +1063,7 @@ function genTags(d, P) {
     else if (ratio < 0.7) tags.volume = '縮量整理';
     else tags.volume = '正常量';
   } else { d.volume_ratio = null; tags.volume = '正常量'; }
-
+ 
   // rsi_zone
   if (rsi_5 !== null) {
     if (rsi_5 >= P.rsi_ob) tags.rsi_zone = '超買';
@@ -1070,17 +1072,17 @@ function genTags(d, P) {
     else if (rsi_5 > P.rsi_os) tags.rsi_zone = '弱勢區';
     else tags.rsi_zone = '超賣';
   } else { tags.rsi_zone = '中性區'; }
-
+ 
   // structure_conflict
   tags.structure_conflict = false;
   if (tags.price_structure === '下跌段') {
     if (tags.ma_alignment === '多頭排列') tags.structure_conflict = true;
     if (tags.momentum === '緩漲' || tags.momentum === '動能加速') tags.structure_conflict = true;
   }
-
+ 
   return tags;
 }
-
+ 
 // ════════════════════════════════════════════════════════════════
 //  TRADE MODE: SCORING
 // ════════════════════════════════════════════════════════════════
@@ -1113,7 +1115,7 @@ function computeScores(tags, P) {
   var raw = (t*P.w_trend + mo*P.w_momentum + ch*P.w_chip + rc*P.w_risk) / total;
   return { score_trend:Math.round(t), score_momentum:Math.round(mo), score_chip:Math.round(ch), score_risk:Math.round(ri), score_composite:Math.round(raw) };
 }
-
+ 
 // ════════════════════════════════════════════════════════════════
 //  TRADE MODE: DECISION CHAIN
 // ════════════════════════════════════════════════════════════════
@@ -1126,7 +1128,7 @@ function riskGating(scores, hasPos) {
     : {action:'觀察',reason:'OBSERVE',gated:true,detail:'score_risk 50~69，無倉禁止試單'};
   return null;
 }
-
+ 
 function tradeRule(tags, scores, d, P) {
   var sc = scores.score_composite, sr = scores.score_risk;
   var ps = tags.price_structure, mo = tags.momentum;
@@ -1136,7 +1138,7 @@ function tradeRule(tags, scores, d, P) {
   var mx = P.max_single;
   var posState = pos === 0 ? '無倉' : pos < mx*0.45 ? '試單中' : pos < mx*0.85 ? '已加碼' : '接近上限';
   var is_planned = VS('is_planned') !== 'false';
-
+ 
   if (!is_planned && !hasPos) {
     return {action:'不進場',reason:'NO_ENTRY_SCORE',l4_code:'NO_ENTRY_SCORE',detail:'R8：非計畫內，禁止下單',posState:posState};
   }
@@ -1188,7 +1190,7 @@ function tradeRule(tags, scores, d, P) {
   }
   return {action:'續抱',reason:'HOLD',l4_code:'HOLD',detail:'H1：結構未壞，動能正常，續抱',posState:posState};
 }
-
+ 
 function riskControl(proposed, d, P, tags) {
   var triggered = [];
   var pos = d.position_pct || 0;
@@ -1199,7 +1201,7 @@ function riskControl(proposed, d, P, tags) {
   var vol_ratio = d.volume_ratio || 0;
   var is_planned = VS('is_planned') !== 'false';
   var conflict = tags.structure_conflict === true;
-
+ 
   if (!is_planned) triggered.push({rule:'R8',type:'no_entry',detail:'非計畫內交易，禁止下單'});
   if (hasPos && pos >= P.max_single) triggered.push({rule:'R5',type:'block_add',detail:'持股'+pos+'%達上限'+P.max_single+'%'});
   if (hasPos && profit_pct < 0 && (proposed.action === '試單' || proposed.action === '加碼')) {
@@ -1235,7 +1237,7 @@ function riskControl(proposed, d, P, tags) {
   else if (blocks.length > 0 && proposed.action === '加碼') { fa='續抱'; ovr_rule=blocks[0].rule; ovr_detail=blocks[0].detail; }
   return {final_action:fa, override:fa!==proposed.action, override_rule:ovr_rule, override_detail:ovr_detail, rules:triggered};
 }
-
+ 
 function computeProfitPct(d) {
   if (d.cost_basis && d.price_current && d.cost_basis > 0) return (d.price_current - d.cost_basis) / d.cost_basis * 100;
   var el = document.getElementById('profit_pct');
@@ -1247,7 +1249,7 @@ function suggestStopLoss(d, tags, P) {
   var sp = d.sl1*(1+P.sl_offset/100);
   return {price:sp.toFixed(2), desc:'SL1('+d.sl1+') x (1'+P.sl_offset+'%) = '+sp.toFixed(2)};
 }
-
+ 
 // ════════════════════════════════════════════════════════════════
 //  TRADE: MAIN ANALYSIS
 // ════════════════════════════════════════════════════════════════
@@ -1278,7 +1280,7 @@ function runAnalysis() {
   try { showP3Section(tags, scores, proposed, risk, d, P); } catch(e) {}
   try { renderChipReferencePanel(VS('symbol')); } catch(e) {}
 }
-
+ 
 // ════════════════════════════════════════════════════════════════
 //  TRADE: RENDER OUTPUT
 // ════════════════════════════════════════════════════════════════
@@ -1286,7 +1288,7 @@ function renderTradeOutput(tags, scores, proposed, risk, sl, d, P) {
   document.getElementById('output-empty-state').style.display = 'none';
   document.getElementById('trade-result').style.display = 'block';
   document.getElementById('invest-result').style.display = 'none';
-
+ 
   var fa  = risk.final_action;
   var ak  = tradeActionKey(fa);
   var box = document.getElementById('decision-box');
@@ -1294,25 +1296,25 @@ function renderTradeOutput(tags, scores, proposed, risk, sl, d, P) {
   var meta= document.getElementById('decision-meta');
   var ob  = document.getElementById('override-banner');
   var cb  = document.getElementById('conflict-banner');
-
+ 
   box.className = 'decision-box box-trade-'+ak;
   act.className = 'decision-action act-trade-'+ak;
   act.textContent = fa;
-
+ 
   var sym = VS('symbol') || '-';
   var rhythmName = {swing:'波段',position:'趨勢持倉'}[currentRhythm];
   meta.innerHTML = '<span>'+sym+'</span> | 交易模式 / <span>'+rhythmName+'</span><br>綜合分 <span>'+scores.score_composite+'</span> | 風險分 <span>'+scores.score_risk+'</span> | L4: <span>'+proposed.l4_code+'</span>';
-
+ 
   if (risk.override && !(risk.override_rule === 'R5' && fa !== '續抱')) {
     ob.className = 'override-banner show';
     ob.textContent = 'override ['+risk.override_rule+']: '+risk.override_detail;
   } else { ob.className = 'override-banner'; }
-
+ 
   if (tags.structure_conflict) {
     cb.className = 'conflict-banner show';
     cb.textContent = 'CONFLICT: 價格結構與均線/動能不一致，已降級，不採用趨勢出場判定';
   } else { cb.className = 'conflict-banner'; }
-
+ 
   var riskRow = document.getElementById('risk-row');
   var allRules = ['R1','R2','R3','R4a','R4b','R4c','R4d','R5','R6','R8'];
   var trMap = {};
@@ -1321,7 +1323,7 @@ function renderTradeOutput(tags, scores, proposed, risk, sl, d, P) {
     var on = !!trMap[r];
     return '<div class="risk-item'+(on?' triggered':'')+'"><div class="risk-dot'+(on?' on-r':'')+'"></div><span class="risk-label">'+r+'</span></div>';
   }).join('');
-
+ 
   var sc = scores.score_composite;
   var bf = document.getElementById('composite-bar');
   document.getElementById('composite-val').textContent = sc;
@@ -1334,7 +1336,7 @@ function renderTradeOutput(tags, scores, proposed, risk, sl, d, P) {
   bf.style.width = sc+'%'; bf.style.backgroundColor = bc;
   var bz_el = document.getElementById('composite-zone');
   bz_el.textContent = bz; bz_el.style.color = bc;
-
+ 
   var bdWrap = document.getElementById('score-breakdown');
   bdWrap.innerHTML = [
     {label:'趨勢',val:scores.score_trend,   color:'#58a6ff'},
@@ -1344,14 +1346,14 @@ function renderTradeOutput(tags, scores, proposed, risk, sl, d, P) {
   ].map(function(item){
     return '<div class="breakdown-item"><span class="bd-label">'+item.label+'</span><div class="bd-bar-track"><div class="bd-bar-fill" style="width:'+item.val+'%;background-color:'+item.color+'"></div></div><span class="bd-val" style="color:'+item.color+'">'+item.val+'</span></div>';
   }).join('');
-
+ 
   var scRow = document.getElementById('scores-row');
   var sMap = {score_trend:{label:'趨勢',color:'#58a6ff'},score_momentum:{label:'動能',color:'#bc8cff'},score_chip:{label:'籌碼',color:'#39d353'},score_risk:{label:'風險',color:'#f85149'}};
   scRow.innerHTML = Object.keys(sMap).map(function(k){
     var m=sMap[k]; var v=scores[k];
     return '<div class="score-card filled" style="--score-color:'+m.color+'"><div class="score-label">'+m.label+'</div><div class="score-value">'+v+'</div><div class="score-sub">'+(k==='score_risk'?'越高越危險':'/100')+'</div></div>';
   }).join('');
-
+ 
   var bullT=['主升段','回測完成','動能加速','籌碼偏多','籌碼短多','多頭排列','放量突破','強勢區'];
   var bearT=['下跌段','結構破壞','翻空','籌碼偏空','籌碼短空','空頭排列','超買','爆量過熱'];
   var warnT=['回測中','動能衰退','整理末段','縮量整理','超賣','弱勢區'];
@@ -1366,7 +1368,7 @@ function renderTradeOutput(tags, scores, proposed, risk, sl, d, P) {
     var v=tags[t.key]||'-';
     return '<div class="tag-card '+tCls(v)+'"><div class="tag-label">'+t.label+'</div><div class="tag-value">'+v+'</div></div>';
   }).join('');
-
+ 
   var posState = proposed.posState || '-';
   var tpct = proposed.trial_pct !== undefined ? proposed.trial_pct : P.trial_pct;
   var apct = proposed.add_pct   !== undefined ? proposed.add_pct   : P.add_pct;
@@ -1382,12 +1384,12 @@ function renderTradeOutput(tags, scores, proposed, risk, sl, d, P) {
     +'<div class="sugg-card"><div class="sugg-label">部位變動</div><div class="sugg-value">'+posDesc+'</div><div class="sugg-sub">當前：'+posState+'</div></div>'
     +'<div class="sugg-card"><div class="sugg-label">進場門檻</div><div class="sugg-value">'+P.entry_min+'</div><div class="sugg-sub">加碼門檻：'+P.add_min+'</div></div>'
     +'<div class="sugg-card"><div class="sugg-label">損益</div><div class="sugg-value" style="color:'+pnlC+'">'+d.profit_pct.toFixed(1)+'%</div><div class="sugg-sub">R1鎖利線：'+P.r1_profit+'%</div></div>';
-
+ 
   var rc_el=document.getElementById('reason-code'); var rt_el=document.getElementById('reason-text');
   if(rc_el) rc_el.textContent=proposed.l4_code||'-';
   if(rt_el) rt_el.textContent=proposed.detail||'-';
 }
-
+ 
 // ════════════════════════════════════════════════════════════════
 //  INVEST MODE: ANALYSIS
 // ════════════════════════════════════════════════════════════════
@@ -1406,9 +1408,9 @@ function runInvestAnalysis() {
   var pos     = V('inv_position') || 0;
   var planned = VS('inv_is_planned') !== 'false';
   var sym     = VS('inv_symbol') || '-';
-
+ 
   var result = {sym:sym, notes:[], signals:[]};
-
+ 
   // ── 1. Trend structure (HH/HL vs LH/LL) ──────────────────────
   var structScore = 0;
   if (sh1 !== null && sh2 !== null && sl1 !== null && sl2 !== null) {
@@ -1416,7 +1418,7 @@ function runInvestAnalysis() {
     else if (sh1 < sh2 && sl1 < sl2) { structScore -= 2; result.signals.push({label:'波段結構', value:'空頭 LH/LL', cls:'p3-snap-bear'}); }
     else { result.signals.push({label:'波段結構', value:'橫盤整理', cls:'p3-snap-warn'}); }
   }
-
+ 
   // ── 2. MA position ────────────────────────────────────────────
   var maScore = 0;
   if (price !== null && ma60 !== null) {
@@ -1431,7 +1433,7 @@ function runInvestAnalysis() {
     if (price > ma120) result.signals.push({label:'MA120 位置', value:'站上年線', cls:'p3-snap-bull'});
     else result.signals.push({label:'MA120 位置', value:'跌破年線', cls:'p3-snap-warn'});
   }
-
+ 
   // ── 3. Price position in 52w range ───────────────────────────
   var posScore = 0;
   if (price !== null && high52 !== null && low52 !== null && high52 > low52) {
@@ -1441,7 +1443,7 @@ function runInvestAnalysis() {
     else if (pct52 <= 30) { posScore++; result.signals.push({label:'52週位置', value:'低位 '+pos52Str, cls:'p3-snap-bull'}); }
     else { result.signals.push({label:'52週位置', value:'中位 '+pos52Str, cls:''}); }
   }
-
+ 
   // ── 4. RSI trend ──────────────────────────────────────────────
   var rsiScore = 0;
   if (rsi14 !== null) {
@@ -1453,7 +1455,7 @@ function runInvestAnalysis() {
       else { result.signals.push({label:'RSI 方向', value:'下降中', cls:'p3-snap-warn'}); }
     }
   }
-
+ 
   // ── 5. Chip ───────────────────────────────────────────────────
   var chipScore = 0;
   if (chipR !== null) {
@@ -1462,18 +1464,18 @@ function runInvestAnalysis() {
     else if (chipR < 0 && chipP !== null && chipP < 0) { chipScore--; result.signals.push({label:'法人籌碼', value:'連續賣超', cls:'p3-snap-bear'}); }
     else { result.signals.push({label:'法人籌碼', value:'中性', cls:''}); }
   }
-
+ 
   // ── 6. PnL if holding ─────────────────────────────────────────
   var pnl = null;
   if (cost !== null && price !== null && cost > 0 && pos > 0) {
     pnl = (price - cost) / cost * 100;
     result.signals.push({label:'持倉損益', value:(pnl>=0?'+':'')+pnl.toFixed(1)+'%', cls: pnl>=0?'p3-snap-bull':'p3-snap-bear'});
   }
-
+ 
   // ── 7. Decision ───────────────────────────────────────────────
   var totalScore = structScore + maScore + rsiScore + chipScore;
   var action, actionReason;
-
+ 
   if (!planned && pos === 0) {
     action = '不建議投入';
     actionReason = '尚未研究/非候選名單，不建議直接布局';
@@ -1492,13 +1494,13 @@ function runInvestAnalysis() {
     action = pos > 0 ? '持續追蹤' : '可觀察';
     actionReason = pos > 0 ? '訊號偏弱，持倉需密切追蹤，考慮是否降低部位' : '訊號偏弱，等待更明確訊號';
   }
-
+ 
   result.action = action;
   result.reason = actionReason;
   result.totalScore = totalScore;
   renderInvestOutput(result);
   saveState();
-
+ 
   // P4 record
   try {
     p4AddInvestEntry({
@@ -1507,28 +1509,28 @@ function runInvestAnalysis() {
     });
   } catch(e) {}
 }
-
+ 
 function renderInvestOutput(r) {
   document.getElementById('output-empty-state').style.display = 'none';
   document.getElementById('trade-result').style.display = 'none';
   document.getElementById('invest-result').style.display = 'block';
   document.getElementById('p3-section').style.display = 'none';
-
+ 
   var ak  = investActionKey(r.action);
   var box = document.getElementById('inv-decision-box');
   var act = document.getElementById('inv-decision-action');
   var meta= document.getElementById('inv-decision-meta');
-
+ 
   box.className = 'decision-box box-inv-'+ak;
   act.className = 'decision-action act-inv-'+ak;
   act.textContent = r.action;
   meta.innerHTML = '<span>'+r.sym+'</span> | 投資模式<br><span>'+r.reason+'</span>';
-
+ 
   var structWrap = document.getElementById('inv-structure-wrap');
   structWrap.innerHTML = r.signals.map(function(s){
     return '<div class="p3-snap-card '+s.cls+'"><div class="p3-snap-label">'+s.label+'</div><div class="p3-snap-value">'+s.value+'</div></div>';
   }).join('');
-
+ 
   var summaryWrap = document.getElementById('inv-summary-wrap');
   var scoreColor = r.totalScore >= 2 ? '#00e676' : r.totalScore >= 0 ? '#ffca28' : '#ff5252';
   summaryWrap.innerHTML =
@@ -1536,7 +1538,7 @@ function renderInvestOutput(r) {
     +'<div class="invest-card"><div class="invest-card-label">決策依據</div><div class="invest-card-value">'+r.reason+'</div></div>'
     +'<div class="invest-card"><div class="invest-card-label">注意事項</div><div class="invest-card-value" style="font-size:11px;color:#6e7e90">投資模式為中長期參考框架，不代表立即進出場建議。所有判斷需結合基本面與個人研究。</div></div>';
 }
-
+ 
 // ════════════════════════════════════════════════════════════════
 //  P3: TRADE DECISION (full L4/L5 chain)
 // ════════════════════════════════════════════════════════════════
@@ -1565,7 +1567,7 @@ function showP3Section(tags, scores, proposed, risk, d, P) {
     resetP3Results();
   } catch(err) { showP3Debug('showP3Section error: '+err.message); }
 }
-
+ 
 function renderP3Snapshot(snap) {
   try {
     var el = document.getElementById('p3-snapshot');
@@ -1599,7 +1601,7 @@ function renderP3Snapshot(snap) {
     }).join('');
   } catch(err) { showP3Debug('renderP3Snapshot error: '+err.message); }
 }
-
+ 
 function validateP3Inputs(snap) {
   var errors=[];
   if (!snap.rhythm) errors.push('節奏未設定，請在 P1 選擇波段或趨勢持倉');
@@ -1619,7 +1621,7 @@ function validateP3Inputs(snap) {
   }
   return errors.length===0;
 }
-
+ 
 function resetP3Results() {
   try {
     var pa=document.getElementById('p3-proposed-action');
@@ -1646,7 +1648,7 @@ function resetP3Results() {
     if(dbg){dbg.className='p3-debug-area'; dbg.textContent='';}
   } catch(e) {}
 }
-
+ 
 function runP3L4(snap) {
   var sc=snap.score_composite, sr=snap.score_risk;
   var ps=snap.tag_price_structure, mo=snap.tag_momentum;
@@ -1687,7 +1689,7 @@ function runP3L4(snap) {
   }
   return out('續抱','HOLD','H1：結構未壞，動能正常，續抱');
 }
-
+ 
 function runP3L5(l4, snap) {
   var triggered=[], pos=snap.position_pct||0, hasPos=pos>0;
   var profit=snap.profit_pct||0, P=snap.P, pa=l4.proposed_action;
@@ -1726,7 +1728,7 @@ function runP3L5(l4, snap) {
   if (blocks.length>0&&pa==='加碼') return mkOvr('續抱',blocks[0].rule,blocks[0].detail,triggered);
   return mkClean(pa,triggered);
 }
-
+ 
 function runP3Decision() {
   try {
     if (!p3InputSnapshot) {showP3Debug('p3InputSnapshot 為空，請先執行 P2 分析'); return;}
@@ -1749,7 +1751,7 @@ function runP3Decision() {
     if(btn){btn.disabled=false; btn.textContent='&#x26A1; 執行交易決策';}
   }
 }
-
+ 
 function renderP3Results(l4,l5,snap) {
   try {
     var paEl=document.getElementById('p3-proposed-action');
@@ -1789,7 +1791,7 @@ function renderP3Results(l4,l5,snap) {
     if(fpEl) setTimeout(function(){fpEl.scrollIntoView({behavior:'smooth',block:'nearest'});},100);
   } catch(err) { showP3Debug('renderP3Results 錯誤: '+err.message); }
 }
-
+ 
 function showP3Debug(msg) {
   var el=document.getElementById('p3-debug-area');
   if(!el) return;
@@ -1800,13 +1802,13 @@ function clearP3Debug() {
   var el=document.getElementById('p3-debug-area');
   if(el){el.className='p3-debug-area'; el.textContent='';}
 }
-
+ 
 // ════════════════════════════════════════════════════════════════
 //  PERSIST
 // ════════════════════════════════════════════════════════════════
 var TRADE_IDS=['symbol','price_current','price_high_recent','price_low_recent','cost_basis','bar_close','prev_close','today_open','ma5','ma10','ma20','rsi_5','rsi_10','rsi_5_prev','dif','signal_macd','osc','osc_prev','sh1','sh2','sl1','sl2','swing_h3','volume_now','volume_prev','daily_change_pct','chip_d0','chip_d1','chip_d2','chip_d3','chip_d4','position_pct','profit_pct','is_planned'];
 var INVEST_IDS=['inv_symbol','inv_price','inv_high52','inv_low52','inv_cost','inv_position','inv_ma20','inv_ma60','inv_ma120','inv_sh1','inv_sh2','inv_sl1','inv_sl2','inv_chip_recent','inv_chip_prev','inv_rsi14','inv_rsi14_prev','inv_is_planned'];
-
+ 
 function saveState() {
   try {
     var st={mainMode:currentMainMode, rhythm:currentRhythm};
@@ -1829,13 +1831,13 @@ function loadState() {
 document.addEventListener('input', function(){saveState();});
 document.addEventListener('change', function(){saveState();});
 loadState();
-
+ 
 // ════════════════════════════════════════════════════════════════
 //  P1: WATCHLIST
 // ════════════════════════════════════════════════════════════════
 var p1Watchlist=[], p1BodyOpen=false;
 var P1_WL_KEY='p1_watchlist_v2', P1_OPEN_KEY='p1_body_open_v2';
-
+ 
 function p1ToggleBody() {
   p1BodyOpen=!p1BodyOpen;
   var body=document.getElementById('p1-body');
@@ -1930,7 +1932,7 @@ document.addEventListener('DOMContentLoaded',function(){
   if(s) s.addEventListener('input',function(){syncIsPlanned();});
   if(s2) s2.addEventListener('input',function(){syncIsPlanned();});
 });
-
+ 
 function p1Init() {
   try{
     p1LoadWatchlist();
@@ -1940,13 +1942,13 @@ function p1Init() {
   }catch(e){console.warn('p1Init error:',e.message);}
 }
 try{p1Init();}catch(e){console.warn('p1Init boot error:',e.message);}
-
+ 
 // ════════════════════════════════════════════════════════════════
 //  P4: JOURNAL
 // ════════════════════════════════════════════════════════════════
 var P4_KEY='p4_journal_v2', P4_OPEN_KEY='p4_body_open_v2', P4_MAX=10;
 var p4Entries=[], p4BodyOpen=false;
-
+ 
 function p4id(id){return document.getElementById(id);}
 function p4ids(id,text){var el=p4id(id);if(el) el.textContent=text;}
 function p4esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -1972,7 +1974,7 @@ function p4LoadOpenState(){
     }
   }catch(e){}
 }
-
+ 
 // Trade entry
 function p4AddEntry(snap,l4,l5) {
   try{
@@ -2007,7 +2009,7 @@ function p4AddEntry(snap,l4,l5) {
     }
   }catch(e){console.warn('p4AddEntry error:',e.message);}
 }
-
+ 
 // Invest entry
 function p4AddInvestEntry(data) {
   try{
@@ -2030,7 +2032,7 @@ function p4AddInvestEntry(data) {
     }
   }catch(e){console.warn('p4AddInvestEntry error:',e.message);}
 }
-
+ 
 function p4CalcFlags(entry) {
   if(entry.recordType==='invest') return [];
   var flags=[];
@@ -2120,23 +2122,23 @@ function p4EntryCardHtml(entry){
     else if(fa==='\u7e8c\u62b1'||fa==='\u6301\u6709\u89c0\u5bdf') actionCls+=' p4-chip-hold';
     else if(fa==='\u8a66\u55ae'||fa==='\u52a0\u78bc'||fa==='\u53ef\u5206\u6279\u5e03\u5c40') actionCls+=' p4-chip-build';
     else if(fa==='\u89c0\u5bdf'||fa==='\u53ef\u89c0\u5bdf'||fa==='\u53ef\u7814\u7a76') actionCls+=' p4-chip-watch';
-
+ 
     var flags=p4CalcFlags(entry);
     var flagsHtml=flags.map(function(f){return '<span class="p4-flag">'+p4esc(f.label)+'</span>';}).join(' ');
     var ae=entry.actual_execution||'-';
     var actualChip=ae!=='-'?'<span class="p4-actual-chip">'+p4esc(ae)+'</span>':'<span class="p4-pending-chip">unfilled</span>';
     var notPlanned=!isInvest&&!entry.is_planned_trade?'<span class="p4-not-planned-dot" title="unplanned"></span>':'';
     var scoreStr=isInvest?(entry.invest_score!==undefined?((entry.invest_score>0?'+':'')+entry.invest_score):''):(entry.score_composite!=null?entry.score_composite:'-');
-
+ 
     // Fill form
     var aeOpts=['-','\u4e0d\u9032\u5834','\u89c0\u5bdf','\u8a66\u55ae','\u52a0\u78bc','\u7e8c\u62b1','\u6e1b\u78bc','\u51fa\u5834'];
     if(isInvest) aeOpts=['-','\u4e0d\u5efa\u8b70\u6295\u5165','\u53ef\u89c0\u5bdf','\u53ef\u7814\u7a76','\u53ef\u5206\u6279\u5e03\u5c40','\u6301\u6709\u89c0\u5bdf','\u8da8\u52e2\u8f49\u5f31','\u6301\u7e8c\u8ffd\u8e64'];
     var aeOptsHtml=aeOpts.map(function(v){return '<option value="'+v+'"'+(v===ae?' selected':'')+'>'+v+'</option>';}).join('');
-
+ 
     var pnlStr=p4PnlHtml(entry.pnl_pct);
     var epVal=entry.entry_price||'', xpVal=entry.exit_price||'';
     var noteVal=p4esc(entry.review_note||'');
-
+ 
     var detailContent='';
     if(!isInvest){
       detailContent+='<div class="p4-detail-section"><div class="p4-detail-label">scores</div><div class="p4-detail-grid">'
@@ -2165,7 +2167,7 @@ function p4EntryCardHtml(entry){
         +'<div class="p4-detail-item" style="margin-top:4px"><div class="p4-detail-key">reason</div><div class="p4-detail-val" style="font-size:10px">'+p4esc(entry.invest_reason||'-')+'</div></div>'
         +'</div>';
     }
-
+ 
     return '<div class="p4-entry-card">'
       +'<div class="p4-entry-head" onclick="p4ToggleDetail(\''+eid+'\')">'
       +'<span class="p4-entry-time">'+p4ts2str(entry.timestamp)+'</span>'
@@ -2224,7 +2226,7 @@ function p4Render(){
 //  Reference layer — does NOT modify final_action or score_composite
 // ════════════════════════════════════════════════════════════════
 var CHIP_STORE_KEY = 'chip_10d_store_v1';
-
+ 
 function getChipStore() {
   try { var r = localStorage.getItem(CHIP_STORE_KEY); return r ? JSON.parse(r) : {}; } catch(e) { return {}; }
 }
@@ -2291,7 +2293,7 @@ function calcChipTrendMetrics(series) {
   result.chip_strength_value = Math.max(-100, Math.min(100, Math.round((a5 || 0) * 2)));
   return result;
 }
-
+ 
 function chipLabelClass(label) {
   if (label === '強多') return 'chip-label-bull';
   if (label === '偏多') return 'chip-label-semi-bull';
@@ -2311,7 +2313,7 @@ function chipNumClass(val) {
   if (val <= -8) return 'chip-ref-card semi-bear';
   return 'chip-ref-card';
 }
-
+ 
 function renderChipHistoryTable(symbol) {
   var el = document.getElementById('chip-history-table');
   if (!el) return;
@@ -2336,7 +2338,7 @@ function renderChipHistoryTable(symbol) {
     +'<tbody>'+rows+'</tbody>'
     +'</table>';
 }
-
+ 
 function renderChipReferencePanel(symbol) {
   var panel = document.getElementById('chip-ref-panel');
   var body  = document.getElementById('chip-ref-body');
@@ -2355,7 +2357,7 @@ function renderChipReferencePanel(symbol) {
   var avg3str  = metrics.chip_avg_3  !== null ? (metrics.chip_avg_3  > 0 ? '+' : '') + metrics.chip_avg_3.toFixed(2) : '-';
   var avg5str  = metrics.chip_avg_5  !== null ? (metrics.chip_avg_5  > 0 ? '+' : '') + metrics.chip_avg_5.toFixed(2) : '-';
   var avg10str = metrics.chip_avg_10 !== null ? (metrics.chip_avg_10 > 0 ? '+' : '') + metrics.chip_avg_10.toFixed(2) : '-';
-
+ 
   // strength bar (0=left-100 to 100=right)
   var sv = metrics.chip_strength_value;
   var barPct = (sv + 100) / 2; // 0..100 representing -100..+100
@@ -2363,7 +2365,7 @@ function renderChipReferencePanel(symbol) {
   var barLeft, barWidth;
   if (sv >= 0) { barLeft = 50; barWidth = barPct - 50; }
   else         { barLeft = barPct; barWidth = 50 - barPct; }
-
+ 
   // sparkline
   var biases = series.map(function(r){return r.chip_center_bias_pct;});
   var maxAbs = Math.max.apply(null, biases.map(function(v){return Math.abs(v||0);}));
@@ -2371,16 +2373,28 @@ function renderChipReferencePanel(symbol) {
   var sparkHtml = biases.map(function(v) {
     var absV = Math.abs(v || 0);
     var h = v === 0 ? 2 : Math.max(3, Math.round(absV / maxAbs * 22));
-    var cls = v > 0 ? 'pos' : v < 0 ? 'neg' : 'zero';
-    // pos: bar grows up from midline; neg: bar grows down from midline
-    var style = 'height:' + h + 'px;';
-    if (cls === 'pos')  style += 'align-self:flex-end;margin-bottom:24px;';
-    else if (cls === 'neg') style += 'align-self:flex-start;margin-top:24px;';
-    return '<div class="chip-spark-bar-wrap"><div class="chip-spark-bar '+cls+'" style="'+style+'"></div></div>';
+    if (v > 0) {
+      // positive: bar sits in top half, flush against midline (bottom of top cell)
+      return '<div class="chip-spark-bar-wrap">'
+        +'<div class="chip-spark-bar-top"><div class="chip-spark-bar pos" style="height:'+h+'px;align-self:flex-end;width:100%"></div></div>'
+        +'<div class="chip-spark-bar-bot"></div>'
+        +'</div>';
+    } else if (v < 0) {
+      // negative: bar sits in bottom half, flush against midline (top of bottom cell)
+      return '<div class="chip-spark-bar-wrap">'
+        +'<div class="chip-spark-bar-top"></div>'
+        +'<div class="chip-spark-bar-bot"><div class="chip-spark-bar neg" style="height:'+h+'px;align-self:flex-start;width:100%"></div></div>'
+        +'</div>';
+    } else {
+      return '<div class="chip-spark-bar-wrap">'
+        +'<div class="chip-spark-bar-top"></div>'
+        +'<div class="chip-spark-bar-bot"><div class="chip-spark-bar zero" style="height:2px;width:100%"></div></div>'
+        +'</div>';
+    }
   }).join('');
-
+ 
   var trendCls = metrics.chip_trend === '波段偏多' ? 'bull' : metrics.chip_trend === '波段偏空' ? 'bear' : '';
-
+ 
   body.innerHTML =
     '<div class="chip-ref-grid">'
     +'<div class="chip-ref-card '+chipNumClass(latest && latest.chip_center_bias_pct)+'"><div class="chip-ref-label">當日偏差%</div><div class="chip-ref-value">'+latestBias+'</div></div>'
@@ -2401,10 +2415,10 @@ function renderChipReferencePanel(symbol) {
     +'<div class="chip-spark-label">近'+series.length+'日偏差值 sparkline</div>'
     +'<div class="chip-spark-bars">'+sparkHtml+'</div>'
     +'</div>';
-
+ 
   panel.style.display = 'block';
 }
-
+ 
 function chipAddRecord() {
   try {
     var errEl = document.getElementById('chip-input-error');
@@ -2436,7 +2450,7 @@ function chipAddRecord() {
     if(errEl) errEl.textContent = '';
   } catch(e) { console.warn('chipAddRecord error:', e.message); }
 }
-
+ 
 function chipClearInput() {
   try {
     var ids = ['chip-date','chip-close','chip-change','chip-inst','chip-vol'];
@@ -2445,18 +2459,18 @@ function chipClearInput() {
     if(errEl) errEl.textContent = '';
   } catch(e) {}
 }
-
+ 
 function loadChipModuleForSymbol(symbol) {
   try {
     renderChipHistoryTable(symbol || '');
   } catch(e) {}
 }
-
+ 
 function bindChipModuleEvents() {
   // symbol input already has listener via syncIsPlanned — we piggyback there
   // nothing extra needed, loadChipModuleForSymbol called from syncIsPlanned
 }
-
+ 
 </script>
 </body>
 </html>
