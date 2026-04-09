@@ -1744,12 +1744,12 @@ function runP3Decision() {
     if (VALID_TRADE_ACTIONS.indexOf(p3L5Result.final_action)<0) throw new Error('L5 final_action 非法: '+p3L5Result.final_action);
     renderP3Results(p3L4Result,p3L5Result,p3InputSnapshot);
     try {p4AddEntry(p3InputSnapshot,p3L4Result,p3L5Result);} catch(e){}
-    if(btn){btn.disabled=false; btn.textContent='&#x26A1; 執行交易決策';}
+    if(btn){btn.disabled=false; btn.textContent='⚡ 執行交易決策';}
     clearP3Debug();
   } catch(err) {
     showP3Debug('runP3Decision 錯誤: '+err.message);
     var btn=document.getElementById('p3-execute-btn');
-    if(btn){btn.disabled=false; btn.textContent='&#x26A1; 執行交易決策';}
+    if(btn){btn.disabled=false; btn.textContent='⚡ 執行交易決策';}
   }
 }
  
