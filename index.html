@@ -1831,8 +1831,11 @@ function loadState() {
     if(st.mainMode) setMainMode(st.mainMode);
   } catch(e){}
 }
-document.addEventListener('input', function(){saveState();});
-document.addEventListener('change', function(){saveState();});
+var _globalComposing = false;
+document.addEventListener('compositionstart', function(){ _globalComposing = true; });
+document.addEventListener('compositionend',   function(){ _globalComposing = false; saveState(); });
+document.addEventListener('input',  function(){ if (!_globalComposing) saveState(); });
+document.addEventListener('change', function(){ saveState(); });
 loadState();
  
 // ════════════════════════════════════════════════════════════════
@@ -2004,8 +2007,20 @@ function syncIsPlanned() {
 document.addEventListener('DOMContentLoaded',function(){
   var s=document.getElementById('symbol');
   var s2=document.getElementById('inv_symbol');
-  if(s) s.addEventListener('input',function(){syncIsPlanned();});
-  if(s2) s2.addEventListener('input',function(){syncIsPlanned();});
+ 
+  // Use compositionend (after IME finishes) + blur + change
+  // to avoid interfering with zhuyin/pinyin mid-composition
+  function bindSymbolEvents(el) {
+    if (!el) return;
+    var composing = false;
+    el.addEventListener('compositionstart', function(){ composing = true; });
+    el.addEventListener('compositionend',   function(){ composing = false; syncIsPlanned(); });
+    el.addEventListener('input',  function(){ if (!composing) syncIsPlanned(); });
+    el.addEventListener('blur',   function(){ syncIsPlanned(); });
+    el.addEventListener('change', function(){ syncIsPlanned(); });
+  }
+  bindSymbolEvents(s);
+  bindSymbolEvents(s2);
 });
  
 function p1Init() {
