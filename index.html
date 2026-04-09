@@ -1435,71 +1435,103 @@ function suggestStopLoss(d, tags, P) {
 //  Pure function — no DOM access, no side effects
 // ════════════════════════════════════════════════════════════════
 function calcKeyLevels(d, tags) {
-  var p  = d.price_current;
-  var sl1 = d.sl1, sl2 = d.sl2;
-  var sh1 = d.sh1, sh2 = d.sh2, h3 = d.swing_h3;
-  var ma5 = d.ma5, ma10 = d.ma10, ma20 = d.ma20;
-  var prevClose = d.prev_close;
-  var bar_close = d.bar_close || p;
+  var sl1 = d.sl1, sh1 = d.sh1;
+  var ma5 = d.ma5, ma10 = d.ma10;
+  var prevClose = d.prev_close, todayOpen = d.today_open;
+  var recentHigh = d.price_high_recent;
+  var bar_close = d.bar_close || d.price_current;
 
-  // ── A. 結構關鍵位 ─────────────────────────────────────────────
-  var struct_support = sl1 ? sl1 : null;
-  var struct_resist  = sh1 ? sh1 : null;
-  var struct_desc    = '';
-
+  // ── A. 結構關鍵位 (unchanged) ─────────────────────────────────
+  var struct_support = sl1 || null;
+  var struct_resist  = sh1 || null;
+  var struct_desc = '';
   if (struct_support !== null && bar_close !== null) {
     if (bar_close < struct_support) {
       struct_desc = '已跌破結構支撐 SL1，波段轉弱';
     } else if (struct_resist !== null && bar_close >= struct_resist * 0.99) {
       struct_desc = '接近/觸及近期結構壓力 SH1，觀察是否站穩';
-    } else if (struct_support !== null && bar_close <= struct_support * 1.03) {
+    } else if (bar_close <= struct_support * 1.03) {
       struct_desc = '接近結構支撐 SL1，跌破則結構轉弱';
     } else {
       struct_desc = '目前位於結構區間內（SL1~SH1），未脫離整理';
     }
-  } else if (struct_support === null) {
+  } else {
     struct_desc = '請填入 SL1 / SH1 以計算結構關鍵位';
   }
 
   // ── B. 短線關鍵位 ─────────────────────────────────────────────
-  // Support: nearest support below current price
-  // Priority: MA5 > MA10 > prev_close (all must be below price)
+  // Rule: pick the candidate CLOSEST TO bar_close from each side.
+  // Support candidates: must be <= bar_close
+  // Resist  candidates: must be >= bar_close
+  // Fallback: sl1 for support, sh1/recentHigh for resist
+
+  var ref = bar_close;
   var stLine_support = null, stLine_support_label = '';
-  if (bar_close !== null) {
-    if (ma5 !== null && ma5 < bar_close) {
-      stLine_support = ma5; stLine_support_label = 'MA5';
-    } else if (ma10 !== null && ma10 < bar_close) {
-      stLine_support = ma10; stLine_support_label = 'MA10';
-    } else if (prevClose !== null && prevClose < bar_close) {
-      stLine_support = prevClose; stLine_support_label = '昨收';
+  var stLine_resist  = null, stLine_resist_label  = '';
+
+  if (ref !== null) {
+    // Build support pool: value <= ref, pick closest (largest value)
+    var supCandidates = [];
+    if (ma5       !== null && ma5       <= ref) supCandidates.push({v: ma5,       l: 'MA5'});
+    if (ma10      !== null && ma10      <= ref) supCandidates.push({v: ma10,      l: 'MA10'});
+    if (prevClose !== null && prevClose <= ref) supCandidates.push({v: prevClose, l: '昨收'});
+    if (todayOpen !== null && todayOpen <= ref) supCandidates.push({v: todayOpen, l: '今開'});
+
+    if (supCandidates.length > 0) {
+      // pick the one closest to ref (max value among those <= ref)
+      var best = supCandidates[0];
+      for (var i = 1; i < supCandidates.length; i++) {
+        if (supCandidates[i].v > best.v) best = supCandidates[i];
+      }
+      stLine_support = best.v;
+      stLine_support_label = best.l;
+    } else {
+      // fallback: sl1
+      if (sl1 !== null) {
+        stLine_support = sl1;
+        stLine_support_label = 'SL1';
+      }
+    }
+
+    // Build resist pool: value >= ref, pick closest (smallest value)
+    var resCandidates = [];
+    if (ma5       !== null && ma5       >= ref) resCandidates.push({v: ma5,       l: 'MA5'});
+    if (ma10      !== null && ma10      >= ref) resCandidates.push({v: ma10,      l: 'MA10'});
+    if (prevClose !== null && prevClose >= ref) resCandidates.push({v: prevClose, l: '昨收'});
+    if (todayOpen !== null && todayOpen >= ref) resCandidates.push({v: todayOpen, l: '今開'});
+    // Only add sh1/recentHigh if no nearer candidates found (they are "far" anchors)
+    if (sh1        !== null && sh1        >= ref) resCandidates.push({v: sh1,        l: 'SH1'});
+    if (recentHigh !== null && recentHigh >= ref) resCandidates.push({v: recentHigh, l: '近期高'});
+
+    if (resCandidates.length > 0) {
+      // pick closest to ref (min value among those >= ref)
+      var bestR = resCandidates[0];
+      for (var j = 1; j < resCandidates.length; j++) {
+        if (resCandidates[j].v < bestR.v) bestR = resCandidates[j];
+      }
+      stLine_resist = bestR.v;
+      stLine_resist_label = bestR.l;
     }
   }
 
-  // Resistance: nearest resistance above current price
-  // Priority: recent high > SH1 > MA20 (all must be above price)
-  var stLine_resist = null, stLine_resist_label = '';
-  var recentHigh = d.price_high_recent;
-  if (bar_close !== null) {
-    if (recentHigh !== null && recentHigh > bar_close) {
-      stLine_resist = recentHigh; stLine_resist_label = '近期高';
-    } else if (sh1 !== null && sh1 > bar_close) {
-      stLine_resist = sh1; stLine_resist_label = 'SH1';
-    } else if (ma20 !== null && ma20 > bar_close) {
-      stLine_resist = ma20; stLine_resist_label = 'MA20';
-    }
-  }
-
+  // ── C. 說明文字 ───────────────────────────────────────────────
   var st_desc = '';
-  if (stLine_support !== null && stLine_resist !== null && bar_close !== null) {
-    if (bar_close <= stLine_support * 1.005) {
-      st_desc = '已觸及短線支撐（' + stLine_support_label + '），跌破則短線轉弱';
-    } else if (bar_close >= stLine_resist * 0.995) {
-      st_desc = '接近短線壓力（' + stLine_resist_label + '），追價需謹慎';
+  var fallbackToStruct = stLine_support !== null && stLine_support === sl1 && stLine_support_label === 'SL1';
+
+  if (stLine_support !== null && stLine_resist !== null && ref !== null) {
+    if (ref <= stLine_support * 1.005) {
+      st_desc = '已觸及' + stLine_support_label + ' 支撐，跌破則短線轉弱';
+    } else if (ref >= stLine_resist * 0.995) {
+      st_desc = '接近' + stLine_resist_label + ' 壓力，追價需謹慎';
+    } else if (fallbackToStruct) {
+      st_desc = '短線支撐暫與結構支撐重疊（' + stLine_support_label + '）';
     } else {
       st_desc = '守' + stLine_support_label + ' 前短線仍屬整理';
     }
   } else if (stLine_support !== null) {
-    st_desc = '守' + stLine_support_label + ' 前短線仍屬整理';
+    st_desc = fallbackToStruct
+      ? '短線支撐暫與結構支撐重疊（' + stLine_support_label + '）'
+      : '守' + stLine_support_label + ' 前短線仍屬整理';
   } else if (stLine_resist !== null) {
     st_desc = '站上' + stLine_resist_label + ' 後短線有再攻機會';
   } else {
