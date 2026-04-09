@@ -414,6 +414,23 @@ body {
 /* P4 chip detail */
 .p4-chip-ref-section { margin-top: 6px; padding-top: 6px; border-top: 1px solid #1a1f26; }
  
+/* ── P4 SNAPSHOT SECTION ── */
+.p4-snapshot-section { margin-top: 8px; padding-top: 8px; border-top: 1px solid #1f3a5f; }
+.p4-snapshot-hdr { font-size: 9px; font-weight: 700; color: #4da6ff; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+.p4-snapshot-group { margin-bottom: 8px; }
+.p4-snapshot-group-label { font-size: 8px; font-weight: 700; color: #3a4150; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 3px; }
+.p4-snapshot-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 3px; }
+.p4-snapshot-item { background-color: #0d1117; border: 1px solid #1a1f26; border-radius: 3px; padding: 4px 6px; }
+.p4-snapshot-key { font-size: 8px; color: #3a4150; text-transform: uppercase; }
+.p4-snapshot-val { font-size: 11px; font-weight: 600; color: #b8c4d0; margin-top: 1px; }
+.p4-snapshot-val.bull { color: #00e676; }
+.p4-snapshot-val.bear { color: #ff5252; }
+.p4-snapshot-val.warn { color: #ffca28; }
+.p4-snapshot-missing { font-size: 10px; color: #3a4150; font-style: italic; padding: 6px 0; }
+/* Draft banner */
+.draft-banner { font-size: 10px; color: #00b8d9; font-weight: 600; padding: 4px 14px; background-color: #001a22; border-bottom: 1px solid #004455; display: none; }
+.draft-banner.show { display: block; }
+ 
 /* ── P4 PANEL ── */
 #p4-journal { background-color: #0a0c0f; border-top: 3px solid #252b34; }
 .p4-header { background-color: #111418; border-bottom: 2px solid #252b34; padding: 10px 16px; display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
@@ -549,6 +566,7 @@ body {
  
   <!-- LEFT: INPUT PANEL -->
   <div class="input-panel" id="input-panel">
+    <div class="draft-banner" id="draft-banner">&#x1F4BE; 已載入草稿</div>
     <div class="empty-state" id="input-empty-state">
       <div class="empty-icon">&#x1F4CB;</div>
       <div class="empty-text">請先在 P1 選擇分析模式</div>
@@ -1280,6 +1298,9 @@ function runAnalysis() {
   saveState();
   try { showP3Section(tags, scores, proposed, risk, d, P); } catch(e) {}
   try { renderChipReferencePanel(VS('symbol')); } catch(e) {}
+  // Save draft + build snapshot for P4
+  try { autoSaveDraft(); } catch(e) {}
+  try { _lastAnalysisSnapshot = buildAnalysisSnapshot(tags, scores, proposed, risk, sl, d, P); } catch(e) {}
 }
  
 // ════════════════════════════════════════════════════════════════
@@ -1743,7 +1764,18 @@ function runP3Decision() {
     if (!p3L5Result) throw new Error('L5 返回空值');
     if (VALID_TRADE_ACTIONS.indexOf(p3L5Result.final_action)<0) throw new Error('L5 final_action 非法: '+p3L5Result.final_action);
     renderP3Results(p3L4Result,p3L5Result,p3InputSnapshot);
+    // Attach P3 results to snapshot before writing to P4
+    try {
+      if (_lastAnalysisSnapshot) {
+        _lastAnalysisSnapshot.p3 = {
+          l4: p3L4Result,
+          l5: p3L5Result,
+          final_action: p3L5Result.final_action
+        };
+      }
+    } catch(e) {}
     try {p4AddEntry(p3InputSnapshot,p3L4Result,p3L5Result);} catch(e){}
+    try { autoSaveDraft(); } catch(e) {}
     if(btn){btn.disabled=false; btn.textContent='⚡ 執行交易決策';}
     clearP3Debug();
   } catch(err) {
@@ -1936,7 +1968,13 @@ function syncIsPlanned() {
 document.addEventListener('DOMContentLoaded',function(){
   var s=document.getElementById('symbol');
   var s2=document.getElementById('inv_symbol');
-  if(s) s.addEventListener('change',function(){syncIsPlanned();});
+  if(s) {
+    s.addEventListener('change', function(){
+      syncIsPlanned();
+      // Load today's draft for this symbol (read-only, no DOM side effects during typing)
+      try { loadDraftForSymbol(s.value.trim()); } catch(e) {}
+    });
+  }
   if(s2) s2.addEventListener('change',function(){syncIsPlanned();});
 });
  
@@ -2006,7 +2044,8 @@ function p4AddEntry(snap,l4,l5) {
       override_rule:l5.override_rule||'', override_reason:l5.override_reason||'',
       l4_reason_code:l4.l4_reason_code||'', l4_reason_summary:l4.l4_reason_summary||'',
       actual_execution:'-', entry_price:'', exit_price:'', pnl_pct:null, review_note:'',
-      chip_ref: (function(){ try { var sym=snap.symbol||''; var s=getChipSeries(sym); var m=calcChipTrendMetrics(s); var lat=s.length?s[s.length-1]:null; return { chip_center_bias_pct:lat?lat.chip_center_bias_pct:null, chip_daily_label:lat?lat.daily_chip_label:'', chip_avg_3:m.chip_avg_3, chip_avg_5:m.chip_avg_5, chip_avg_10:m.chip_avg_10, chip_trend:m.chip_trend, chip_strength_value:m.chip_strength_value }; } catch(e){ return {}; } })()
+      chip_ref: (function(){ try { var sym=snap.symbol||''; var s=getChipSeries(sym); var m=calcChipTrendMetrics(s); var lat=s.length?s[s.length-1]:null; return { chip_center_bias_pct:lat?lat.chip_center_bias_pct:null, chip_daily_label:lat?lat.daily_chip_label:'', chip_avg_3:m.chip_avg_3, chip_avg_5:m.chip_avg_5, chip_avg_10:m.chip_avg_10, chip_trend:m.chip_trend, chip_strength_value:m.chip_strength_value }; } catch(e){ return {}; } })(),
+      snapshot: (function(){ try { return _lastAnalysisSnapshot ? JSON.parse(JSON.stringify(_lastAnalysisSnapshot)) : null; } catch(e){ return null; } })()
     });
     p4Save(); p4Render();
     if(!p4BodyOpen){
@@ -2190,6 +2229,7 @@ function p4EntryCardHtml(entry){
       +'</div>'
       +'<div class="p4-entry-detail" id="p4-detail-'+eid+'">'
       +detailContent
+      +p4SnapshotHtml(entry)
       +(entry.chip_ref && (entry.chip_ref.chip_trend || entry.chip_ref.chip_center_bias_pct !== null) ?
         '<div class="p4-chip-ref-section p4-detail-section">'
         +'<div class="p4-detail-label">籌碼參考（記錄時快照）</div>'
@@ -2476,6 +2516,195 @@ function loadChipModuleForSymbol(symbol) {
 function bindChipModuleEvents() {
   // symbol input already has listener via syncIsPlanned — we piggyback there
   // nothing extra needed, loadChipModuleForSymbol called from syncIsPlanned
+}
+ 
+// ════════════════════════════════════════════════════════════════
+//  DRAFT BY SYMBOL  (per-stock today's input cache)
+// ════════════════════════════════════════════════════════════════
+var DRAFT_KEY = 'trading_drafts_by_symbol_v1';
+ 
+function getDraftStore() {
+  try { var r = localStorage.getItem(DRAFT_KEY); return r ? JSON.parse(r) : {}; } catch(e) { return {}; }
+}
+function saveDraftStore(store) {
+  try { localStorage.setItem(DRAFT_KEY, JSON.stringify(store)); } catch(e) {}
+}
+function todayKey() {
+  var d = new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function saveDraftForSymbol(sym) {
+  try {
+    if (!sym || sym.trim() === '') return;
+    var store = getDraftStore();
+    var inputs = {};
+    TRADE_IDS.forEach(function(id){ var el=document.getElementById(id); if(el) inputs[id]=el.value; });
+    store[sym.trim()] = { symbol:sym.trim(), updated_at:Date.now(), date_key:todayKey(), inputs:inputs, mainMode:currentMainMode, rhythm:currentRhythm };
+    // Keep max 20 symbols
+    var keys = Object.keys(store);
+    if (keys.length > 20) { delete store[keys[0]]; }
+    saveDraftStore(store);
+  } catch(e) { console.warn('saveDraftForSymbol error:', e.message); }
+}
+function loadDraftForSymbol(sym) {
+  try {
+    if (!sym || sym.trim() === '') return false;
+    var store = getDraftStore();
+    var draft = store[sym.trim()];
+    if (!draft || !draft.inputs || draft.date_key !== todayKey()) return false;
+    TRADE_IDS.forEach(function(id){
+      var el=document.getElementById(id);
+      if(el && draft.inputs[id] !== undefined) el.value = draft.inputs[id];
+    });
+    // Show draft banner briefly
+    var banner = document.getElementById('draft-banner');
+    if (banner) {
+      banner.className = 'draft-banner show';
+      setTimeout(function(){ if(banner) banner.className = 'draft-banner'; }, 2000);
+    }
+    return true;
+  } catch(e) { console.warn('loadDraftForSymbol error:', e.message); return false; }
+}
+ 
+// Called by runAnalysis() and runP3Decision() — save draft after any execution
+function autoSaveDraft() {
+  try { saveDraftForSymbol(VS('symbol')); } catch(e) {}
+}
+ 
+// ════════════════════════════════════════════════════════════════
+//  LAST ANALYSIS STATE  (for P4 snapshot)
+// ════════════════════════════════════════════════════════════════
+var _lastAnalysisSnapshot = null;  // set by runAnalysis()
+ 
+function buildAnalysisSnapshot(tags, scores, proposed, risk, sl, d, P) {
+  try {
+    var inputs = {};
+    TRADE_IDS.forEach(function(id){ var el=document.getElementById(id); if(el) inputs[id]=el.value; });
+    var riskFlags = {};
+    ['R1','R2','R3','R4a','R4b','R4c','R4d','R5','R6','R8'].forEach(function(r){
+      riskFlags[r] = risk.rules ? risk.rules.some(function(x){return x.rule===r;}) : false;
+    });
+    return {
+      inputs: inputs,
+      mainMode: currentMainMode,
+      rhythm: currentRhythm,
+      tags: {
+        price_structure: tags.price_structure,
+        ma_alignment: tags.ma_alignment,
+        momentum: tags.momentum,
+        chip: tags.chip,
+        volume: tags.volume,
+        rsi_zone: tags.rsi_zone,
+        structure_conflict: tags.structure_conflict
+      },
+      scores: {
+        score_composite: scores.score_composite,
+        score_trend: scores.score_trend,
+        score_momentum: scores.score_momentum,
+        score_chip: scores.score_chip,
+        score_risk: scores.score_risk
+      },
+      suggestions: {
+        sl_price: sl ? sl.price : '-',
+        sl_desc:  sl ? sl.desc  : '-',
+        final_action: risk.final_action,
+        proposed_action: proposed.action,
+        posState: proposed.posState || '-'
+      },
+      risk_flags: riskFlags,
+      risk_override: risk.override ? { rule: risk.override_rule, detail: risk.override_detail } : null
+    };
+  } catch(e) { return null; }
+}
+ 
+// ════════════════════════════════════════════════════════════════
+//  P4 SNAPSHOT RENDER
+// ════════════════════════════════════════════════════════════════
+function p4SnapshotHtml(entry) {
+  try {
+    var snap = entry.snapshot;
+    if (!snap) {
+      return '<div class="p4-snapshot-section"><div class="p4-snapshot-missing">此紀錄建立於舊版，無完整分析快照</div></div>';
+    }
+ 
+    function sval(v, bullVals, bearVals) {
+      if (v === null || v === undefined) return '<span class="p4-snapshot-val">-</span>';
+      var cls = '';
+      if (bullVals && bullVals.indexOf(String(v)) >= 0) cls = ' bull';
+      else if (bearVals && bearVals.indexOf(String(v)) >= 0) cls = ' bear';
+      return '<span class="p4-snapshot-val'+cls+'">'+p4esc(String(v))+'</span>';
+    }
+    function nval(v, prefix) {
+      if (v === null || v === undefined) return '<span class="p4-snapshot-val">-</span>';
+      var cls = v > 0 ? ' bull' : v < 0 ? ' bear' : '';
+      return '<span class="p4-snapshot-val'+cls+'">'+(prefix||'')+(v > 0 ? '+' : '')+v+'</span>';
+    }
+ 
+    var t = snap.tags || {}, sc = snap.scores || {}, sg = snap.suggestions || {};
+    var rf = snap.risk_flags || {};
+    var inp = snap.inputs || {};
+    var p3s = snap.p3 || {};
+ 
+    var triggeredRules = Object.keys(rf).filter(function(k){return rf[k];});
+ 
+    // Inputs summary (key fields only)
+    var inputsHtml = '<div class="p4-snapshot-group"><div class="p4-snapshot-group-label">輸入</div><div class="p4-snapshot-grid">'
+      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">現價</div>'+sval(inp.price_current)+'</div>'
+      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">持倉%</div>'+sval(inp.position_pct)+'</div>'
+      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">損益%</div>'+sval(inp.profit_pct)+'</div>'
+      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">MA5</div>'+sval(inp.ma5)+'</div>'
+      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">RSI(5)</div>'+sval(inp.rsi_5)+'</div>'
+      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">SL1</div>'+sval(inp.sl1)+'</div>'
+      +'</div></div>';
+ 
+    // Tags
+    var tagsHtml = '<div class="p4-snapshot-group"><div class="p4-snapshot-group-label">技術標籤</div><div class="p4-snapshot-grid">'
+      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">結構</div>'+sval(t.price_structure,['主升段','回測完成'],['下跌段','結構破壞'])+'</div>'
+      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">均線</div>'+sval(t.ma_alignment,['多頭排列'],['空頭排列'])+'</div>'
+      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">動能</div>'+sval(t.momentum,['動能加速'],['翻空'])+'</div>'
+      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">籌碼</div>'+sval(t.chip,['籌碼偏多','籌碼短多'],['籌碼偏空','籌碼短空'])+'</div>'
+      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">量能</div>'+sval(t.volume,['放量突破'],['爆量過熱'])+'</div>'
+      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">RSI區</div>'+sval(t.rsi_zone,['強勢區'],['超買','弱勢區'])+'</div>'
+      +'</div></div>';
+ 
+    // Scores
+    var scoresHtml = '<div class="p4-snapshot-group"><div class="p4-snapshot-group-label">分數</div><div class="p4-snapshot-grid">'
+      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">綜合</div>'+nval(sc.score_composite)+'</div>'
+      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">趨勢</div>'+nval(sc.score_trend)+'</div>'
+      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">動能</div>'+nval(sc.score_momentum)+'</div>'
+      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">籌碼</div>'+nval(sc.score_chip)+'</div>'
+      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">風險</div>'+nval(sc.score_risk)+'</div>'
+      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">節奏</div>'+sval(snap.rhythm)+'</div>'
+      +'</div></div>';
+ 
+    // Decision
+    var p3Html = '';
+    if (p3s.l4 || p3s.l5) {
+      var l4 = p3s.l4 || {}, l5 = p3s.l5 || {};
+      p3Html = '<div class="p4-snapshot-group"><div class="p4-snapshot-group-label">P3 決策</div><div class="p4-snapshot-grid">'
+        +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">L4 建議</div>'+sval(l4.proposed_action)+'</div>'
+        +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">L4 Code</div><span class="p4-snapshot-val" style="font-size:9px">'+p4esc(l4.l4_reason_code||'-')+'</span></div>'
+        +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">最終</div>'+sval(l5.final_action)+'</div>'
+        +'<div class="p4-snapshot-item" style="grid-column:1/-1"><div class="p4-snapshot-key">Override</div><span class="p4-snapshot-val" style="font-size:9px">'+p4esc(l5.override_triggered?('['+l5.override_rule+'] '+l5.override_reason):'無')+'</span></div>'
+        +'</div></div>';
+    }
+ 
+    // Risk flags
+    var riskHtml = '<div class="p4-snapshot-group"><div class="p4-snapshot-group-label">風控觸發</div><div style="font-size:11px;color:'+(triggeredRules.length?'#ff5252':'#00e676')+';font-weight:700;padding:2px 0">'+(triggeredRules.length?triggeredRules.join(' '):'全通過')+'</div></div>';
+ 
+    // Suggestions
+    var suggHtml = '<div class="p4-snapshot-group"><div class="p4-snapshot-group-label">建議參數</div><div class="p4-snapshot-grid">'
+      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">建議停損</div>'+sval(sg.sl_price)+'</div>'
+      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">持倉狀態</div>'+sval(sg.posState)+'</div>'
+      +'<div class="p4-snapshot-item"><div class="p4-snapshot-key">L4提案</div>'+sval(sg.proposed_action)+'</div>'
+      +'</div></div>';
+ 
+    return '<div class="p4-snapshot-section">'
+      +'<div class="p4-snapshot-hdr">&#x1F4CA; 分析快照（記錄時）</div>'
+      + inputsHtml + tagsHtml + scoresHtml + p3Html + riskHtml + suggHtml
+      +'</div>';
+  } catch(e) {
+    return '<div class="p4-snapshot-section"><div class="p4-snapshot-missing">快照顯示錯誤：'+p4esc(String(e.message))+'</div></div>';
+  }
 }
  
 </script>
