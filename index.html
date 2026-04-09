@@ -2573,14 +2573,33 @@ function getDailyChipLabel(changePct, biasPct) {
   return '不明';
 }
 function calcChipTrendMetrics(series) {
+  // chip_avg_N = rolling N-day bias using raw inst_net and total_volume sums
+  // formula: (sum_inst_net / (sum_total_volume / 2)) * 100
+  // NOT a simple average of daily bias values
   var result = { chip_avg_3: null, chip_avg_5: null, chip_avg_10: null, chip_trend: '資料不足', chip_strength_value: 0 };
   if (!series || series.length < 3) return result;
-  var biases = series.map(function(r){ return r.chip_center_bias_pct; }).filter(function(v){ return v !== null && v !== undefined; });
-  if (biases.length < 3) return result;
-  function avg(arr) { return arr.reduce(function(a,b){return a+b;}, 0) / arr.length; }
-  if (biases.length >= 3)  result.chip_avg_3  = Math.round(avg(biases.slice(-3))  * 100) / 100;
-  if (biases.length >= 5)  result.chip_avg_5  = Math.round(avg(biases.slice(-5))  * 100) / 100;
-  if (biases.length >= 10) result.chip_avg_10 = Math.round(avg(biases.slice(-10)) * 100) / 100;
+ 
+  function rollingBias(arr) {
+    // arr: slice of series records, each with inst_net and total_volume
+    var sumInst = 0, sumVol = 0, valid = true;
+    for (var i = 0; i < arr.length; i++) {
+      var r = arr[i];
+      if (r.inst_net === null || r.inst_net === undefined ||
+          r.total_volume === null || r.total_volume === undefined || r.total_volume <= 0) {
+        valid = false; break;
+      }
+      sumInst += r.inst_net;
+      sumVol  += r.total_volume;
+    }
+    if (!valid || sumVol <= 0) return null;
+    return Math.round((sumInst / (sumVol / 2) * 100) * 100) / 100;
+  }
+ 
+  var n = series.length;
+  if (n >= 3)  result.chip_avg_3  = rollingBias(series.slice(-3));
+  if (n >= 5)  result.chip_avg_5  = rollingBias(series.slice(-5));
+  if (n >= 10) result.chip_avg_10 = rollingBias(series.slice(-10));
+ 
   var a5 = result.chip_avg_5, a10 = result.chip_avg_10;
   if (a5 === null) { result.chip_trend = '資料不足'; }
   else if (a5 >= 8 && (a10 === null || a10 >= 5))  { result.chip_trend = '波段偏多'; }
