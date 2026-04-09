@@ -1255,15 +1255,6 @@ function suggestStopLoss(d, tags, P) {
 //  TRADE: MAIN ANALYSIS
 // ════════════════════════════════════════════════════════════════
 function runAnalysis() {
-  try {
-    var sym = VS('symbol');
-    if (sym && sym !== _prevTradeSymbol) {
-      saveFieldsForSymbol(_prevTradeSymbol, 'trade');
-      loadFieldsForSymbol(sym, 'trade');
-      _prevTradeSymbol = sym;
-    }
-    saveFieldsForSymbol(sym, 'trade');
-  } catch(e) {}
   var P = TEMPLATES[currentRhythm];
   var d = {
     price_current:V('price_current'), price_high_recent:V('price_high_recent'),
@@ -1404,15 +1395,6 @@ function renderTradeOutput(tags, scores, proposed, risk, sl, d, P) {
 //  INVEST MODE: ANALYSIS
 // ════════════════════════════════════════════════════════════════
 function runInvestAnalysis() {
-  try {
-    var sym = VS('inv_symbol');
-    if (sym && sym !== _prevInvestSymbol) {
-      saveFieldsForSymbol(_prevInvestSymbol, 'invest');
-      loadFieldsForSymbol(sym, 'invest');
-      _prevInvestSymbol = sym;
-    }
-    saveFieldsForSymbol(sym, 'invest');
-  } catch(e) {}
   var price   = V('inv_price');
   var high52  = V('inv_high52');
   var low52   = V('inv_low52');
@@ -1940,74 +1922,6 @@ function p1RenderWatchlist() {
   list.innerHTML=html;
 }
  
-// ════════════════════════════════════════════════════════════════
-//  PER-SYMBOL INPUT STORE
-//  Saves/loads all P2 input fields per stock symbol
-// ════════════════════════════════════════════════════════════════
-var SYM_STORE_KEY = 'symbol_input_store_v1';
-var _prevTradeSymbol = '';
-var _prevInvestSymbol = '';
- 
-function getSymStore() {
-  try { var r = localStorage.getItem(SYM_STORE_KEY); return r ? JSON.parse(r) : {}; } catch(e) { return {}; }
-}
-function saveSymStore(store) {
-  try { localStorage.setItem(SYM_STORE_KEY, JSON.stringify(store)); } catch(e) {}
-}
- 
-// Save all trade/invest fields for a given symbol
-function saveFieldsForSymbol(sym, mode) {
-  if (!sym || sym.trim() === '') return;
-  var store = getSymStore();
-  var key = (mode || 'trade') + ':' + sym.trim();
-  var ids = mode === 'invest' ? INVEST_IDS : TRADE_IDS;
-  var data = {};
-  ids.forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el) data[id] = el.value;
-  });
-  store[key] = data;
-  // Keep store size reasonable: max 30 entries
-  var keys = Object.keys(store);
-  if (keys.length > 30) {
-    delete store[keys[0]];
-  }
-  saveSymStore(store);
-}
- 
-// Load all trade/invest fields for a given symbol
-function loadFieldsForSymbol(sym, mode) {
-  if (!sym || sym.trim() === '') return false;
-  var store = getSymStore();
-  var key = (mode || 'trade') + ':' + sym.trim();
-  var data = store[key];
-  if (!data) return false;
-  var ids = mode === 'invest' ? INVEST_IDS : TRADE_IDS;
-  ids.forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el && data[id] !== undefined) el.value = data[id];
-  });
-  return true;
-}
- 
-// Called when symbol input changes — save old, load new
-function onSymbolChange(newSym, mode) {
-  try {
-    var prevSym = mode === 'invest' ? _prevInvestSymbol : _prevTradeSymbol;
-    // Save current fields under OLD symbol (before clearing)
-    if (prevSym && prevSym.trim() !== '' && prevSym !== newSym) {
-      saveFieldsForSymbol(prevSym, mode);
-    }
-    // Update tracker
-    if (mode === 'invest') _prevInvestSymbol = newSym;
-    else _prevTradeSymbol = newSym;
-    // Load new symbol's stored fields
-    if (newSym && newSym.trim() !== '') {
-      loadFieldsForSymbol(newSym, mode);
-    }
-  } catch(e) { console.warn('onSymbolChange error:', e.message); }
-}
- 
 function syncIsPlanned() {
   var trEl=document.getElementById('is_planned');
   var invEl=document.getElementById('inv_is_planned');
@@ -2019,8 +1933,12 @@ function syncIsPlanned() {
   saveState();
   try { loadChipModuleForSymbol(VS('symbol') || VS('inv_symbol')); } catch(e) {}
 }
-// Symbol fields have NO event listeners — iOS IME must not be interrupted
-// syncIsPlanned() is called by watchlist item clicks and analyse buttons
+document.addEventListener('DOMContentLoaded',function(){
+  var s=document.getElementById('symbol');
+  var s2=document.getElementById('inv_symbol');
+  if(s) s.addEventListener('change',function(){syncIsPlanned();});
+  if(s2) s2.addEventListener('change',function(){syncIsPlanned();});
+});
  
 function p1Init() {
   try{
@@ -2031,11 +1949,6 @@ function p1Init() {
   }catch(e){console.warn('p1Init error:',e.message);}
 }
 try{p1Init();}catch(e){console.warn('p1Init boot error:',e.message);}
-// Initialise prev symbol trackers from current field values
-try {
-  _prevTradeSymbol  = (document.getElementById('symbol')     || {}).value || '';
-  _prevInvestSymbol = (document.getElementById('inv_symbol') || {}).value || '';
-} catch(e) {}
  
 // ════════════════════════════════════════════════════════════════
 //  P4: JOURNAL
