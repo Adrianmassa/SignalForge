@@ -532,6 +532,20 @@ body {
 .dt-status.info { display: block; background-color: #001133; color: #4da6ff; border: 1px solid #1f3a5f; }
 .dt-warning { font-size: 10px; color: #ffca28; padding: 6px 0; display: flex; gap: 5px; }
  
+ 
+/* ── P2 COLLAPSIBLE SECTIONS ── */
+.p2-collapse-hdr {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px; background-color: #1a1f26;
+  border-bottom: 1px solid #3a4150; border-top: 1px solid #252b34;
+  font-size: 11px; font-weight: 700; color: #b8c4d0;
+  letter-spacing: 1px; text-transform: uppercase;
+  cursor: pointer; user-select: none;
+}
+.p2-collapse-hdr .p2-caret { margin-left: auto; font-size: 11px; color: #6e7e90; transition: transform .2s; }
+.p2-collapse-hdr .p2-caret.open { transform: rotate(180deg); }
+.p2-collapse-body { display: none; }
+.p2-collapse-body.open { display: block; }
 </style>
 </head>
 <body>
@@ -656,19 +670,23 @@ body {
         <div class="input-cell"><label>SL1 近期低</label><input type="number" id="sl1" placeholder="-" step="0.1"></div>
         <div class="input-cell"><label>SL2 上波低</label><input type="number" id="sl2" placeholder="-" step="0.1"></div>
       </div>
-      <div class="section-hdr"><span class="dot dot-green"></span>成交量 &amp; 漲幅 <span class="opt-label">選填</span></div>
+      <div class="p2-collapse-hdr" onclick="p2Toggle('vol')"><span class="dot dot-green"></span>成交量 &amp; 漲幅 <span class="opt-label">選填</span><span class="p2-caret" id="p2-caret-vol">&#x25BC;</span></div>
+      <div class="p2-collapse-body" id="p2-body-vol">
       <div class="input-grid cols3">
         <div class="input-cell"><label>現量</label><input type="number" id="volume_now" placeholder="-" step="1"><span class="unit">張或M</span></div>
         <div class="input-cell"><label>前期量</label><input type="number" id="volume_prev" placeholder="-" step="1"></div>
         <div class="input-cell"><label>單日漲跌 %</label><input type="number" id="daily_change_pct" placeholder="-" step="0.1"></div>
       </div>
-      <div class="section-hdr"><span class="dot dot-purple"></span>三大法人（張） <span class="opt-label">選填</span></div>
+      </div>
+      <div class="p2-collapse-hdr" onclick="p2Toggle('chipd')"><span class="dot dot-purple"></span>三大法人 D0~D4 <span class="opt-label">選填</span><span class="p2-caret" id="p2-caret-chipd">&#x25BC;</span></div>
+      <div class="p2-collapse-body" id="p2-body-chipd">
       <div class="chip-row">
         <div class="chip-cell"><label>D0</label><input type="number" id="chip_d0" placeholder="-"></div>
         <div class="chip-cell"><label>D1</label><input type="number" id="chip_d1" placeholder="-"></div>
         <div class="chip-cell"><label>D2</label><input type="number" id="chip_d2" placeholder="-"></div>
         <div class="chip-cell"><label>D3</label><input type="number" id="chip_d3" placeholder="-"></div>
         <div class="chip-cell"><label>D4</label><input type="number" id="chip_d4" placeholder="-"></div>
+      </div>
       </div>
       <div class="section-hdr"><span class="dot dot-yellow"></span>持倉狀態</div>
       <div class="input-grid cols2">
@@ -684,8 +702,9 @@ body {
           </select>
         </div>
       </div>
-      <!-- CHIP 10D MODULE INPUT -->
-      <div class="section-hdr"><span class="dot" style="background-color:#00b8d9"></span>籌碼方向快照 <span class="opt-label">主力中心偏差 · 近10日</span></div>
+      <!-- CHIP 10D MODULE INPUT (collapsible; result summary always visible in output panel) -->
+      <div class="p2-collapse-hdr" onclick="p2Toggle('chip10d')"><span class="dot" style="background-color:#00b8d9;width:7px;height:7px;border-radius:50%;flex-shrink:0"></span>主力籌碼趨勢 — 輸入 <span class="opt-label">近10日中心偏差</span><span class="p2-caret" id="p2-caret-chip10d">&#x25BC;</span></div>
+      <div class="p2-collapse-body" id="p2-body-chip10d">
       <div class="chip-module-wrap">
         <div class="chip-error" id="chip-input-error"></div>
         <div class="chip-input-row cols3">
@@ -704,6 +723,7 @@ body {
         <div class="chip-table-wrap">
           <div id="chip-history-table"></div>
         </div>
+      </div>
       </div>
       <div class="analyse-wrap">
         <button class="btn-analyse trade" onclick="runAnalysis()">&#x26A1; 執行技術分析</button>
@@ -761,7 +781,7 @@ body {
         </div>
       </div>
       <!-- CHIP DIRECTION SNAPSHOT MODULE (shared with trade mode via CHIP_STORE_KEY) -->
-      <div class="section-hdr"><span class="dot" style="background-color:#00b8d9"></span>籌碼方向快照 <span class="opt-label">主力中心偏差 · 近10日</span></div>
+      <div class="section-hdr"><span class="dot" style="background-color:#00b8d9"></span>主力籌碼趨勢 <span class="opt-label">近10日中心偏差</span></div>
       <div class="chip-module-wrap">
         <div class="chip-error" id="chip-input-error-inv"></div>
         <div class="chip-input-row cols3">
@@ -920,8 +940,8 @@ body {
       <div class="chip-ref-panel" id="chip-ref-panel" style="display:none">
         <div class="chip-ref-hdr" id="chip-ref-hdr-label">
           <span style="width:7px;height:7px;border-radius:50%;background:#00b8d9;flex-shrink:0;display:inline-block"></span>
-          籌碼方向快照
-          <span style="margin-left:auto;font-size:9px;color:#004455;font-weight:400;text-transform:none">讀取層 - 不影響最終決策</span>
+          主力籌碼趨勢
+          <span style="margin-left:auto;font-size:9px;color:#00b8d9;font-weight:600;text-transform:none;letter-spacing:0">波段：主力方向參考 · 短線：洗盤行為判讀</span>
         </div>
         <div class="chip-ref-body" id="chip-ref-body">
           <div class="chip-empty">執行分析後顯示籌碼參考</div>
@@ -2348,6 +2368,25 @@ function p4EntryCardHtml(entry){
     var scoreStr=isInvest?(entry.invest_score!==undefined?((entry.invest_score>0?'+':'')+entry.invest_score):''):(entry.score_composite!=null?entry.score_composite:'-');
  
     // ── SUMMARY HEAD (always visible) ─────────────────────────────
+    // Get chip trend for summary
+    var chipTrendSummary = (function(){
+      try {
+        if (entry.chip_snapshot_data && entry.chip_snapshot_data.chip_trend_label) return entry.chip_snapshot_data.chip_trend_label;
+        if (entry.chip_ref && entry.chip_ref.chip_trend) return entry.chip_ref.chip_trend;
+        return '';
+      } catch(e){ return ''; }
+    })();
+    var chipTrendColor = chipTrendSummary === '波段偏多' ? '#00e676' : chipTrendSummary === '波段偏空' ? '#ff5252' : chipTrendSummary === '震盪中性' ? '#ffca28' : '#6e7e90';
+ 
+    // Structure & momentum tag colors
+    var bullT2=['主升段','回測完成','動能加速'];
+    var bearT2=['下跌段','結構破壞','翻空'];
+    var warnT2=['回測中','動能衰退','整理末段','緩漲'];
+    function tagColor2(v){ if(bullT2.indexOf(v)>=0)return '#00e676'; if(bearT2.indexOf(v)>=0)return '#ff5252'; if(warnT2.indexOf(v)>=0)return '#ffca28'; return '#6e7e90'; }
+ 
+    var structTag = entry.tag_price_structure||'';
+    var moTag     = entry.tag_momentum||'';
+ 
     var headHtml='<div class="p4-entry-head" onclick="p4ToggleDetail(\''+eid+'\')">'
       +'<span class="p4-entry-time">'+p4ts2str(entry.timestamp)+'</span>'
       +notPlanned
@@ -2356,6 +2395,9 @@ function p4EntryCardHtml(entry){
       +'<span class="p4-chip '+modeCls+'">'+modeLabel+(rhythmLabel?' / '+rhythmLabel:'')+'</span>'
       +(scoreStr?'<span class="p4-chip" style="color:#b8c4d0">'+scoreStr+'</span>':'')
       +'<span class="'+actionCls+'">'+p4esc(fa)+'</span>'
+      +(structTag?'<span class="p4-chip" style="color:'+tagColor2(structTag)+';border-color:'+tagColor2(structTag)+'22">'+p4esc(structTag)+'</span>':'')
+      +(moTag?'<span class="p4-chip" style="color:'+tagColor2(moTag)+';border-color:'+tagColor2(moTag)+'22">'+p4esc(moTag)+'</span>':'')
+      +(chipTrendSummary?'<span class="p4-chip" style="color:'+chipTrendColor+';border-color:'+chipTrendColor+'22">&#x1F4B9;'+p4esc(chipTrendSummary)+'</span>':'')
       +actualChip+flagsHtml
       +'</div>'
       +'<span class="p4-entry-expand-icon" id="p4-exp-icon-'+eid+'">&#x25BC;</span>'
@@ -2423,7 +2465,7 @@ function p4EntryCardHtml(entry){
             +'</div>';
         }
         return '<button class="p4-snap-toggle" style="background:#001a22;border-color:#004455;color:#00b8d9" data-snapkey="'+kc+'" onclick="p4SnapToggle(this.getAttribute(\'data-snapkey\'))">'
-          +'<span>&#x1F4B9; \u7c4c\u78bc\u65b9\u5411\u5feb\u7167</span>'
+          +'<span>&#x1F4B9; \u4e3b\u529b\u7c4c\u78bc\u8da8\u52e2\u5feb\u7167</span>'
           +'<span class="p4-snap-toggle-icon" id="p4-sicon-'+kc+'">&#x25BC;</span></button>'
           +'<div class="p4-snap-content" id="p4-scontent-'+kc+'">'+innerHtml+'</div>';
       } catch(e2) { return ''; }
@@ -2601,7 +2643,7 @@ function renderChipReferencePanel(symbol) {
   var series = getChipSeries(symbol);
   if (!series || series.length === 0) {
     panel.style.display = 'block';
-    body.innerHTML = '<div class="chip-empty">無籌碼資料，請在 P2 輸入近10日法人資料</div>';
+    body.innerHTML = '<div class="chip-empty">尚無資料，請在 P2 主力籌碼趨勢模組輸入近10日法人資料</div>';
     return;
   }
   var metrics = calcChipTrendMetrics(series);
@@ -3259,6 +3301,20 @@ function buildChipSnapshotHtml(data) {
   } catch(e) {
     return '<div style="font-size:10px;color:#ff5252">\u7c4c\u78bc\u5feb\u7167\u932f\u8aa4: '+String(e.message)+'</div>';
   }
+}
+ 
+// ════════════════════════════════════════════════════════════════
+//  P2 COLLAPSIBLE SECTION TOGGLE
+// ════════════════════════════════════════════════════════════════
+function p2Toggle(key) {
+  try {
+    var body  = document.getElementById('p2-body-'+key);
+    var caret = document.getElementById('p2-caret-'+key);
+    if (!body) return;
+    var isOpen = body.classList.contains('open');
+    body.className  = isOpen ? 'p2-collapse-body' : 'p2-collapse-body open';
+    if (caret) caret.className = isOpen ? 'p2-caret' : 'p2-caret open';
+  } catch(e) {}
 }
  
 </script>
